@@ -140,6 +140,21 @@ func strokedquadcurve(screen *ebiten.Image, x1, y1, x2, y2, x3, y3, sw float32, 
 	vector.StrokePath(screen, &p, strokecolor, true, &op)
 }
 
+func cubecurve(screen *ebiten.Image, x1, y1, x2, y2, x3, y3, x4, y4 float32, fillcolor color.NRGBA) {
+	var p vector.Path
+	p.MoveTo(x1, y1)
+	p.CubicTo(x2, y2, x3, y3, x4, y4)
+	vector.DrawFilledPath(screen, &p, fillcolor, true, vector.FillRuleEvenOdd)
+}
+
+func strokedcubecurve(screen *ebiten.Image, x1, y1, x2, y2, x3, y3, x4, y4, sw float32, strokecolor color.NRGBA) {
+	var p vector.Path
+	p.MoveTo(x1, y1)
+	p.CubicTo(x2, y2, x3, y3, x4, y4)
+	op := vector.StrokeOptions{Width: sw}
+	vector.StrokePath(screen, &p, strokecolor, true, &op)
+}
+
 // showimage places an image with the upper left corner at (x,y)
 func showimage(screen *ebiten.Image, x, y float32, scale float64, img image.Image) {
 	op := &ebiten.DrawImageOptions{}
@@ -275,6 +290,31 @@ func (c *Canvas) QuadStrokedCurve(x1, y1, x2, y2, x3, y3, size float32, strokeco
 	strokedquadcurve(c.Screen, x1, y1, x2, y2, x3, y3, size, strokecolor)
 }
 
+// CubeCurve makes a filled cubic Bezier curve beginning at (x1,y1),
+// with control points at (x2,y2). ending at (x3,y3), ending at (x4,y4)
+// using percent-based coordinates and measures
+func (c *Canvas) CubeCurve(x1, y1, x2, y2, x3, y3, x4, y4 float32, strokecolor color.NRGBA) {
+	cw, ch := float32(c.Width), float32(c.Height)
+	x1, y1 = dimen(x1, y1, cw, ch)
+	x2, y2 = dimen(x2, y2, cw, ch)
+	x3, y3 = dimen(x3, y3, cw, ch)
+	x4, y4 = dimen(x4, y4, cw, ch)
+	cubecurve(c.Screen, x1, y1, x2, y2, x3, y3, x4, y4, strokecolor)
+}
+
+// CubeCurve strokes a cubic Bezier curve beginning at (x1,y1),
+// with control points at (x2,y2). ending at (x3,y3), ending at (x4,y4)
+// using percent-based coordinates and measures
+func (c *Canvas) StrokedCubeCurve(x1, y1, x2, y2, x3, y3, x4, y4, size float32, strokecolor color.NRGBA) {
+	cw, ch := float32(c.Width), float32(c.Height)
+	x1, y1 = dimen(x1, y1, cw, ch)
+	x2, y2 = dimen(x2, y2, cw, ch)
+	x3, y3 = dimen(x3, y3, cw, ch)
+	x4, y4 = dimen(x4, y4, cw, ch)
+	size = pct(size, cw)
+	strokedcubecurve(c.Screen, x1, y1, x2, y2, x3, y3, x4, y4, size, strokecolor)
+}
+
 // Curve is a shorthand for QuadCurve
 func (c *Canvas) Curve(x1, y1, x2, y2, x3, y3 float32, fillcolor color.NRGBA) {
 	c.QuadCurve(x1, y1, x2, y2, x3, y3, fillcolor)
@@ -286,8 +326,12 @@ func (c *Canvas) StrokedCurve(x1, y1, x2, y2, x3, y3, size float32, strokecolor 
 }
 
 // Square draws a filled square centered at (x,y), sides at size
-func (c *Canvas) Square(x, y, size float32, fillcolor color.NRGBA) {
-	c.CenterRect(x, y, size, size, fillcolor)
+func (c *Canvas) Square(x, y, w float32, fillcolor color.NRGBA) {
+	cw, ch := float32(c.Width), float32(c.Height)
+	x, y = dimen(x, y, cw, ch)
+	w = pct(w, ch)
+	h := pct(100, w)
+	centerRect(c.Screen, x, y, w, h, fillcolor)
 }
 
 // VLines draws a vertical line begging ar (x,y) moving up size
@@ -375,7 +419,7 @@ func (c *Canvas) Polar(cx, cy, r, theta float32) (float32, float32) {
 // Coord shows the specified coordinate, using percentage-based coordinates
 // the (x, y) label is above the point, with a label below
 func (c *Canvas) Coord(x, y, size float32, s string, fillcolor color.NRGBA) {
-	c.Square(x, y, size/2, fillcolor)
+	c.Circle(x, y, size/4, fillcolor)
 	b := []byte("(")
 	b = strconv.AppendFloat(b, float64(x), 'g', -1, 32)
 	b = append(b, ',')

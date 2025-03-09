@@ -1,5 +1,5 @@
 # ebcanvas -- a 2D canvas API built on ebitenengine
-![ebcanvas](ebcanvas.png)
+![ebcanvas](play.png)
 
 # Introduction
 
@@ -76,15 +76,15 @@ Currently for text to work, a font must be loaded with LoadFont() (see below).
 
 Text anchored at (x,y)
 
-	(c *Canvas) Text(x, y, size float32, s string, textcolor color.NRGBA)```
+	(c *Canvas) Text(x, y, size float32, s string, textcolor color.NRGBA)
 
 Text centered at (x,y) 
 
-	(c *Canvas) CText(x, y, size float32, s string, textcolor color.NRGBA)```
+	(c *Canvas) CText(x, y, size float32, s string, textcolor color.NRGBA)
 
 Text whose end is at (x,y) 
 
-	(c *Canvas) EText(x, y, size float32, s string, textcolor color.NRGBA)```
+	(c *Canvas) EText(x, y, size float32, s string, textcolor color.NRGBA)
 
 # Images
 
@@ -98,12 +98,9 @@ CornerImage places an image with the upper left corner at (x,y) t the specified 
 
 # Shapes
 
-Arc draws an filled arc centered at (cx,cy) with radius r, between angle a1 and a2
+Arc draws filled or stroked arc centered at (cx,cy) with radius r, between angle a1 and a2
 
 	(c *Canvas) Arc(cx, cy, r, a1, a2 float32, fillcolor color.NRGBA)
-
-StrokedArc draws an filled arc centered at (cx,cy) with radius r, between angle a1 and a2
-
 	(c *Canvas) StrokedArc(cx, cy, r, a1, a2, size float32, strokecolor color.NRGBA)
 
 Rect draws a filled rectangle centered at (x,y) with dimensions (w,h)
@@ -131,6 +128,11 @@ Draw filled and stroked quadradic Bezier curves, starting at (x1,y1), ending at 
 
 	(c *Canvas) Curve(x1, y1, x2, y2, x3, y3 float32, fillcolor color NRGBA) 
 	(c *Canvas) StrokedCurve(x1, y1, x2, y2, x3, y3, size float32, strokecolor color.NRGBA) 
+
+Draw filled and stroked cubic Bezier curves, starting at (x1,y1), ending at (x4,y4), with control points at (x2,y2) and (x3,y3)
+
+	func (c *Canvas) CubeCurve(x1, y1, x2, y2, x3, y3, x4, y4 float32, strokecolor color.NRGBA)
+	func (c *Canvas) StrokedCubeCurve(x1, y1, x2, y2, x3, y3, x4, y4, size float32, strokecolor color.NRGBA)
 
 Square draws a square centered at (x,y) at the specified size.
 
