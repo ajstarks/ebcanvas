@@ -36,15 +36,15 @@ func work(screen *ebiten.Image) {
 	canvas.Width = screenWidth
 	canvas.Height = screenHeight
 
-	black := color.RGBA{0, 0, 0, 255}
-	white := color.RGBA{255, 255, 255, 255}
-	gray := color.RGBA{200, 200, 200, 255}
-	red := color.RGBA{255, 0, 0, 255}
-	green := color.RGBA{0, 128, 0, 255}
-	magenta := color.RGBA{255, 0, 255, 255}
-	yellow := color.RGBA{255, 255, 0, 255}
-	orange := color.RGBA{255, 165, 0, 255}
-	maroon := color.RGBA{128, 0, 0, 255}
+	black := color.NRGBA{0, 0, 0, 255}
+	white := color.NRGBA{255, 255, 255, 255}
+	gray := color.NRGBA{200, 200, 200, 255}
+	red := color.NRGBA{255, 0, 0, 255}
+	green := color.NRGBA{0, 128, 0, 255}
+	magenta := color.NRGBA{255, 0, 255, 255}
+	yellow := color.NRGBA{255, 255, 0, 255}
+	orange := color.NRGBA{255, 165, 0, 255}
+	maroon := color.NRGBA{128, 0, 0, 255}
 
 	bgcolor := white
 	txcolor := black
@@ -68,7 +68,7 @@ func work(screen *ebiten.Image) {
 	)
 
 	// Begin...
-	screen.Fill(bgcolor)
+	canvas.Background(bgcolor)
 	canvas.Grid(0, 0, 100, 100, 0.1, 5, gray)
 
 	// Title
@@ -77,14 +77,14 @@ func work(screen *ebiten.Image) {
 
 	// API labels
 	funcnames := []string{
-		"{C,E}Text(x, y, size float32, s string,color color.RGBA)",
-		"Circle(x, y, r float32,color color.RGBA)",
-		"Rect(x, y, w, h float32, color color.RGBA)",
-		"Square(x, y, w float32, color color.RGBA)",
-		"{Stroked}Arc(cx, cy, r, a1, a2, {,sw} float32, color color.RGBA)",
-		"{Stroked}Curve(bx,by, cx,cy, ex,ey {,sw} float32, color color.RGBA)",
-		`Line(x1,y1, x2,y2, sw float32, color color.RGBA)`,
-		"Polygon(x,y []float32, color color.RGBA)",
+		"{C,E}Text(x, y, size float32, s string,color color.NRGBA)",
+		"Circle(x, y, r float32,color color.NRGBA)",
+		"Rect(x, y, w, h float32, color color.NRGBA)",
+		"Square(x, y, w float32, color color.NRGBA)",
+		"{Stroked}Arc(cx, cy, r, a1, a2, {,sw} float32, color color.NRGBA)",
+		"{Stroked}Curve(bx,by, cx,cy, ex,ey {,sw} float32, color color.NRGBA)",
+		`Line(x1,y1, x2,y2, sw float32, color color.NRGBA)`,
+		"Polygon(x,y []float32, color color.NRGBA)",
 		"{Corner}Image(x,y, scale float32,img image.Image)",
 	}
 	funcdesc := []string{

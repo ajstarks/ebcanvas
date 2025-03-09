@@ -34,11 +34,11 @@ func mondiran(screen *ebiten.Image) {
 	canvas.Height = screenHeight
 	canvas.Width = screenWidth
 
-	black := color.RGBA{0, 0, 0, 255}
-	white := color.RGBA{255, 255, 255, 255}
-	blue := color.RGBA{0, 0, 255, 255}
-	red := color.RGBA{255, 0, 0, 255}
-	yellow := color.RGBA{255, 255, 0, 255}
+	black := color.NRGBA{0, 0, 0, 255}
+	white := color.NRGBA{255, 255, 255, 255}
+	blue := color.NRGBA{0, 0, 255, 255}
+	red := color.NRGBA{255, 0, 0, 255}
+	yellow := color.NRGBA{255, 255, 0, 255}
 
 	var third float32 = 100.0 / 3
 	var border float32 = 1

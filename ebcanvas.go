@@ -45,14 +45,14 @@ func dimen(xp, yp, w, h float32) (float32, float32) {
 // Absolute methods
 
 // arc draws a filled arc centered at (cx,cy) with radius r, between angle a1 and a2
-func arc(screen *ebiten.Image, cx, cy, r, a1, a2 float32, fillcolor color.RGBA) {
+func arc(screen *ebiten.Image, cx, cy, r, a1, a2 float32, fillcolor color.NRGBA) {
 	var p vector.Path
 	p.Arc(cx, cy, r, a1, a2, vector.CounterClockwise)
 	vector.DrawFilledPath(screen, &p, fillcolor, true, vector.FillRuleEvenOdd)
 }
 
 // strokedarc strokes an arc centered at (cx,cy) with radius r, between angle a1 and a2
-func strokedarc(screen *ebiten.Image, cx, cy, r, a1, a2, size float32, strokecolor color.RGBA) {
+func strokedarc(screen *ebiten.Image, cx, cy, r, a1, a2, size float32, strokecolor color.NRGBA) {
 	var p vector.Path
 	op := vector.StrokeOptions{Width: size}
 	p.Arc(cx, cy, r, a1, a2, vector.CounterClockwise)
@@ -60,7 +60,7 @@ func strokedarc(screen *ebiten.Image, cx, cy, r, a1, a2, size float32, strokecol
 }
 
 // btext draws text beginning at (x,y)
-func btext(screen *ebiten.Image, x, y float64, size float64, s string, textcolor color.RGBA) {
+func btext(screen *ebiten.Image, x, y float64, size float64, s string, textcolor color.NRGBA) {
 	op := &text.DrawOptions{}
 	op.GeoM.Translate(x, y-size)
 	op.ColorScale.ScaleWithColor(textcolor)
@@ -68,7 +68,7 @@ func btext(screen *ebiten.Image, x, y float64, size float64, s string, textcolor
 }
 
 // ctext draws text centered at (x,y)
-func ctext(screen *ebiten.Image, x, y float64, size float64, s string, textcolor color.RGBA) {
+func ctext(screen *ebiten.Image, x, y float64, size float64, s string, textcolor color.NRGBA) {
 	ff := &text.GoTextFace{Source: mplusFaceSource, Size: size}
 	tw := text.Advance(s, ff)
 	op := &text.DrawOptions{}
@@ -78,7 +78,7 @@ func ctext(screen *ebiten.Image, x, y float64, size float64, s string, textcolor
 }
 
 // etext draws text with end point at (x,y)
-func etext(screen *ebiten.Image, x, y float64, size float64, s string, textcolor color.RGBA) {
+func etext(screen *ebiten.Image, x, y float64, size float64, s string, textcolor color.NRGBA) {
 	ff := &text.GoTextFace{Source: mplusFaceSource, Size: size}
 	tw := text.Advance(s, ff)
 	op := &text.DrawOptions{}
@@ -88,23 +88,23 @@ func etext(screen *ebiten.Image, x, y float64, size float64, s string, textcolor
 }
 
 // centerRect draws a filled rectangle centered at (x,y) with dimensions (w,h)
-func centerRect(screen *ebiten.Image, x, y, w, h float32, fillcolor color.RGBA) {
+func centerRect(screen *ebiten.Image, x, y, w, h float32, fillcolor color.NRGBA) {
 	px, py := x-(w/2), y-(h/2)
 	vector.DrawFilledRect(screen, px, py, w, h, fillcolor, true)
 }
 
 // circle draws a filled circle centered at (x,y), with radius r
-func circle(screen *ebiten.Image, cx, cy, r float32, fillcolor color.RGBA) {
+func circle(screen *ebiten.Image, cx, cy, r float32, fillcolor color.NRGBA) {
 	vector.DrawFilledCircle(screen, cx, cy, r, fillcolor, true)
 }
 
 // line draws a line between (x1,y1) and (x2,y2)
-func line(screen *ebiten.Image, x1, y1, x2, y2, sw float32, strokecolor color.RGBA) {
+func line(screen *ebiten.Image, x1, y1, x2, y2, sw float32, strokecolor color.NRGBA) {
 	vector.StrokeLine(screen, x1, y1, x2, y2, sw, strokecolor, true)
 }
 
 // polygon draws a filled polygon using the points in x and y
-func polygon(screen *ebiten.Image, x, y []float32, fillcolor color.RGBA) {
+func polygon(screen *ebiten.Image, x, y []float32, fillcolor color.NRGBA) {
 	lx := len(x)
 	if lx != len(y) {
 		return
@@ -123,7 +123,7 @@ func polygon(screen *ebiten.Image, x, y []float32, fillcolor color.RGBA) {
 
 // quadcurve draws a filled quadradic bezier curve beginning at (x1,y1),
 // with control point at (x2,y2), ending at (x3,y3)
-func quadcurve(screen *ebiten.Image, x1, y1, x2, y2, x3, y3 float32, fillcolor color.RGBA) {
+func quadcurve(screen *ebiten.Image, x1, y1, x2, y2, x3, y3 float32, fillcolor color.NRGBA) {
 	var p vector.Path
 	p.MoveTo(x1, y1)
 	p.QuadTo(x2, y2, x3, y3)
@@ -132,7 +132,7 @@ func quadcurve(screen *ebiten.Image, x1, y1, x2, y2, x3, y3 float32, fillcolor c
 
 // strokeduadcurve strokes a quadradic bezier curve beginning at (x1,y1),
 // with control point at (x2,y2), ending at (x3,y3)
-func strokedquadcurve(screen *ebiten.Image, x1, y1, x2, y2, x3, y3, sw float32, strokecolor color.RGBA) {
+func strokedquadcurve(screen *ebiten.Image, x1, y1, x2, y2, x3, y3, sw float32, strokecolor color.NRGBA) {
 	var p vector.Path
 	p.MoveTo(x1, y1)
 	p.QuadTo(x2, y2, x3, y3)
@@ -185,7 +185,7 @@ func (c *Canvas) Image(x, y float32, scale float32, img image.Image) {
 
 // Arc draws an filled arc centered at (cx,cy) with radius r, between angle a1 and a2
 // using percent-based coordinates and measures
-func (c *Canvas) Arc(cx, cy, r, a1, a2 float32, fillcolor color.RGBA) {
+func (c *Canvas) Arc(cx, cy, r, a1, a2 float32, fillcolor color.NRGBA) {
 	cw, ch := float32(c.Width), float32(c.Height)
 	cx, cy = dimen(cx, cy, cw, ch)
 	r = pct(r, cw)
@@ -194,7 +194,7 @@ func (c *Canvas) Arc(cx, cy, r, a1, a2 float32, fillcolor color.RGBA) {
 
 // StrokedArc draws an stroked arc centered at (cx,cy) with radius r, between angle a1 and a2
 // using percent-based coordinates and measures
-func (c *Canvas) StrokedArc(cx, cy, r, a1, a2, size float32, strokecolor color.RGBA) {
+func (c *Canvas) StrokedArc(cx, cy, r, a1, a2, size float32, strokecolor color.NRGBA) {
 	cw, ch := float32(c.Width), float32(c.Height)
 	cx, cy = dimen(cx, cy, cw, ch)
 	r = pct(r, cw)
@@ -204,7 +204,7 @@ func (c *Canvas) StrokedArc(cx, cy, r, a1, a2, size float32, strokecolor color.R
 
 // CenterRect draws a filled rectangle centered at (x,y) with dimensions (w,h)
 // using percent-based coordinates and measures
-func (c *Canvas) CenterRect(x, y, w, h float32, fillcolor color.RGBA) {
+func (c *Canvas) CenterRect(x, y, w, h float32, fillcolor color.NRGBA) {
 	cw, ch := float32(c.Width), float32(c.Height)
 	w = pct(w, cw)
 	h = pct(h, ch)
@@ -214,13 +214,13 @@ func (c *Canvas) CenterRect(x, y, w, h float32, fillcolor color.RGBA) {
 
 // Rect draws a filled rectangle centered at (x,y) with dimensions (w,h)
 // using percent-based coordinates and measures
-func (c *Canvas) Rect(x, y, w, h float32, fillcolor color.RGBA) {
+func (c *Canvas) Rect(x, y, w, h float32, fillcolor color.NRGBA) {
 	c.CenterRect(x, y, w, h, fillcolor)
 }
 
 // Circle draws a filled circle centered at (x,y), with radius r
 // using percent-based coordinates and measures
-func (c *Canvas) Circle(cx, cy, r float32, fillcolor color.RGBA) {
+func (c *Canvas) Circle(cx, cy, r float32, fillcolor color.NRGBA) {
 	cw, ch := float32(c.Width), float32(c.Height)
 	cx, cy = dimen(cx, cy, cw, ch)
 	r = pct(r, cw)
@@ -228,13 +228,13 @@ func (c *Canvas) Circle(cx, cy, r float32, fillcolor color.RGBA) {
 }
 
 // HLine makes a horizonal line beginning at (x,y) extending to the right
-func (c *Canvas) HLine(x1, y1, size, sw float32, strokecolor color.RGBA) {
+func (c *Canvas) HLine(x1, y1, size, sw float32, strokecolor color.NRGBA) {
 	c.Line(x1, y1, x1+size, y1, sw, strokecolor)
 }
 
 // Line draws a line between (x1,y1) and (x2,y2)
 // using percent-based coordinates and measures
-func (c *Canvas) Line(x1, y1, x2, y2, sw float32, strokecolor color.RGBA) {
+func (c *Canvas) Line(x1, y1, x2, y2, sw float32, strokecolor color.NRGBA) {
 	cw, ch := float32(c.Width), float32(c.Height)
 	x1, y1 = dimen(x1, y1, cw, ch)
 	x2, y2 = dimen(x2, y2, cw, ch)
@@ -244,7 +244,7 @@ func (c *Canvas) Line(x1, y1, x2, y2, sw float32, strokecolor color.RGBA) {
 
 // Polygon draws a filled polygon using the points in x and y
 // using percent-based coordinates and measures
-func (c *Canvas) Polygon(x, y []float32, fillcolor color.RGBA) {
+func (c *Canvas) Polygon(x, y []float32, fillcolor color.NRGBA) {
 	cw, ch := float32(c.Width), float32(c.Height)
 	for i := 0; i < len(x); i++ {
 		x[i], y[i] = dimen(x[i], y[i], cw, ch)
@@ -255,7 +255,7 @@ func (c *Canvas) Polygon(x, y []float32, fillcolor color.RGBA) {
 // Quadcurve draws a filled quadradic bezier curve beginning at (x1,y1),
 // with control point at (x2,y2). ending at (x3,y3),
 // using percent-based coordinates and measures
-func (c *Canvas) QuadCurve(x1, y1, x2, y2, x3, y3 float32, fillcolor color.RGBA) {
+func (c *Canvas) QuadCurve(x1, y1, x2, y2, x3, y3 float32, fillcolor color.NRGBA) {
 	cw, ch := float32(c.Width), float32(c.Height)
 	x1, y1 = dimen(x1, y1, cw, ch)
 	x2, y2 = dimen(x2, y2, cw, ch)
@@ -266,7 +266,7 @@ func (c *Canvas) QuadCurve(x1, y1, x2, y2, x3, y3 float32, fillcolor color.RGBA)
 // QuadStrokedCurve strokes a quadradic bezier curve beginning at (x1,y1),
 // with control point at (x2,y2). ending at (x3,y3),
 // using percent-based coordinates and measures
-func (c *Canvas) QuadStrokedCurve(x1, y1, x2, y2, x3, y3, size float32, strokecolor color.RGBA) {
+func (c *Canvas) QuadStrokedCurve(x1, y1, x2, y2, x3, y3, size float32, strokecolor color.NRGBA) {
 	cw, ch := float32(c.Width), float32(c.Height)
 	x1, y1 = dimen(x1, y1, cw, ch)
 	x2, y2 = dimen(x2, y2, cw, ch)
@@ -276,22 +276,22 @@ func (c *Canvas) QuadStrokedCurve(x1, y1, x2, y2, x3, y3, size float32, strokeco
 }
 
 // Curve is a shorthand for QuadCurve
-func (c *Canvas) Curve(x1, y1, x2, y2, x3, y3 float32, fillcolor color.RGBA) {
+func (c *Canvas) Curve(x1, y1, x2, y2, x3, y3 float32, fillcolor color.NRGBA) {
 	c.QuadCurve(x1, y1, x2, y2, x3, y3, fillcolor)
 }
 
 // StrokedCurve is a shorthand for QuadStrokeCurve
-func (c *Canvas) StrokedCurve(x1, y1, x2, y2, x3, y3, size float32, strokecolor color.RGBA) {
+func (c *Canvas) StrokedCurve(x1, y1, x2, y2, x3, y3, size float32, strokecolor color.NRGBA) {
 	c.QuadStrokedCurve(x1, y1, x2, y2, x3, y3, size, strokecolor)
 }
 
 // Square draws a filled square centered at (x,y), sides at size
-func (c *Canvas) Square(x, y, size float32, fillcolor color.RGBA) {
+func (c *Canvas) Square(x, y, size float32, fillcolor color.NRGBA) {
 	c.CenterRect(x, y, size, size, fillcolor)
 }
 
 // VLines draws a vertical line begging ar (x,y) moving up size
-func (c *Canvas) VLine(x1, y1, size, sw float32, strokecolor color.RGBA) {
+func (c *Canvas) VLine(x1, y1, size, sw float32, strokecolor color.NRGBA) {
 	c.Line(x1, y1, x1, y1+size, sw, strokecolor)
 }
 
@@ -299,7 +299,7 @@ func (c *Canvas) VLine(x1, y1, size, sw float32, strokecolor color.RGBA) {
 
 // Text draws text beginning at (x,y)
 // using percent-based coordinates and measures
-func (c *Canvas) Text(x, y, size float32, s string, textcolor color.RGBA) {
+func (c *Canvas) Text(x, y, size float32, s string, textcolor color.NRGBA) {
 	cw, ch := float32(c.Width), float32(c.Height)
 	cx, cy := dimen(x, y, cw, ch)
 	size = pct(size, cw)
@@ -308,7 +308,7 @@ func (c *Canvas) Text(x, y, size float32, s string, textcolor color.RGBA) {
 
 // CText draws text centered at (x,y)
 // using percent-based coordinates and measures
-func (c *Canvas) CText(x, y, size float32, s string, textcolor color.RGBA) {
+func (c *Canvas) CText(x, y, size float32, s string, textcolor color.NRGBA) {
 	cw, ch := float32(c.Width), float32(c.Height)
 	cx, cy := dimen(x, y, cw, ch)
 	size = pct(size, cw)
@@ -317,7 +317,7 @@ func (c *Canvas) CText(x, y, size float32, s string, textcolor color.RGBA) {
 
 // EText draws text with end point at (x,y)
 // using percent-based coordinates and measures
-func (c *Canvas) EText(x, y, size float32, s string, textcolor color.RGBA) {
+func (c *Canvas) EText(x, y, size float32, s string, textcolor color.NRGBA) {
 	cw, ch := float32(c.Width), float32(c.Height)
 	cx, cy := dimen(x, y, cw, ch)
 	size = pct(size, cw)
@@ -326,14 +326,14 @@ func (c *Canvas) EText(x, y, size float32, s string, textcolor color.RGBA) {
 
 // Utility Methods
 
-// Background fills the canvas with a background color
-func (c *Canvas) Background(fillcolor color.RGBA) {
+// Background fills the canvas with the specified color
+func (c *Canvas) Background(fillcolor color.NRGBA) {
 	c.Screen.Fill(fillcolor)
 }
 
 // Grid draws a grid starting at (x,y), dimensions at (w,h),
 // A gridline is drawn at the specifed interval.
-func (c *Canvas) Grid(x, y, w, h, size, interval float32, strokecolor color.RGBA) {
+func (c *Canvas) Grid(x, y, w, h, size, interval float32, strokecolor color.NRGBA) {
 	for xp := x; xp <= x+w; xp += interval {
 		c.Line(xp, y, xp, y+h, size, strokecolor) // vertical line
 	}
@@ -374,7 +374,7 @@ func (c *Canvas) Polar(cx, cy, r, theta float32) (float32, float32) {
 
 // Coord shows the specified coordinate, using percentage-based coordinates
 // the (x, y) label is above the point, with a label below
-func (c *Canvas) Coord(x, y, size float32, s string, fillcolor color.RGBA) {
+func (c *Canvas) Coord(x, y, size float32, s string, fillcolor color.NRGBA) {
 	c.Square(x, y, size/2, fillcolor)
 	b := []byte("(")
 	b = strconv.AppendFloat(b, float64(x), 'g', -1, 32)

@@ -48,8 +48,8 @@ func hello(screen *ebiten.Image) {
 	canvas.Width = screenWidth
 	canvas.Height = screenHeight
 
-	bgcolor := color.RGBA{0, 0, 0, 255}
-	txcolor := color.RGBA{255, 255, 255, 255}
+	bgcolor := color.NRGBA{0, 0, 0, 255}
+	txcolor := color.NRGBA{255, 255, 255, 255}
 
 	canvas.Background(bgcolor)
 	canvas.Image(50, 0, 100, earth)

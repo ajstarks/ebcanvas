@@ -28,9 +28,9 @@ var screenWidth = 1000
 var screenHeight = 1000
 
 var (
-	topcolor = color.RGBA{255, 0, 0, 100}
-	botcolor = color.RGBA{0, 0, 255, 100}
-	bgcolor  = color.RGBA{0, 0, 0, 255}
+	topcolor = color.NRGBA{255, 0, 0, 100}
+	botcolor = color.NRGBA{0, 0, 255, 100}
+	bgcolor  = color.NRGBA{0, 0, 0, 255}
 )
 
 func polar(screen *ebiten.Image) {
