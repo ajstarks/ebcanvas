@@ -1,0 +1,44 @@
+package main
+
+import (
+	"fmt"
+	"os"
+
+	"github.com/ajstarks/ebcanvas"
+	"github.com/hajimehoshi/ebiten/v2"
+)
+
+type App struct{}
+
+func (g *App) Update() error {
+	return nil
+}
+
+func (g *App) Layout(outsideWidth, outsideHeight int) (int, int) {
+	return screenWidth, screenHeight
+}
+
+func (g *App) Draw(screen *ebiten.Image) {
+	work(screen)
+}
+
+
+var screenWidth = 1000
+var screenHeight = 1000
+
+func work(screen *ebiten.Image) {
+	canvas := new(ebcanvas.Canvas)
+	canvas.Screen = screen
+	canvas.Width = screenWidth
+	canvas.Height = screenHeight
+}
+
+func main() {
+	ebiten.SetWindowSize(screenWidth, screenHeight)
+	ebiten.SetWindowTitle("hello")
+
+	if err := ebiten.RunGame(&App{}); err != nil {
+		fmt.Fprintf(os.Stderr, "%v\n", err)
+		return
+	}
+}
