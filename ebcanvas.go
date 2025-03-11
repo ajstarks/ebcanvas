@@ -93,6 +93,12 @@ func centerRect(screen *ebiten.Image, x, y, w, h float32, fillcolor color.NRGBA)
 	vector.DrawFilledRect(screen, px, py, w, h, fillcolor, true)
 }
 
+// cornerRect draws a filled rectangle with upperleft at (x,y) with dimensions (w,h)
+func cornerRect(screen *ebiten.Image, x, y, w, h float32, fillcolor color.NRGBA) {
+	px, py := x, y
+	vector.DrawFilledRect(screen, px, py, w, h, fillcolor, true)
+}
+
 // circle draws a filled circle centered at (x,y), with radius r
 func circle(screen *ebiten.Image, cx, cy, r float32, fillcolor color.NRGBA) {
 	vector.DrawFilledCircle(screen, cx, cy, r, fillcolor, true)
@@ -105,20 +111,19 @@ func line(screen *ebiten.Image, x1, y1, x2, y2, sw float32, strokecolor color.NR
 
 // polygon draws a filled polygon using the points in x and y
 func polygon(screen *ebiten.Image, x, y []float32, fillcolor color.NRGBA) {
-	lx := len(x)
-	if lx != len(y) {
+	l := len(x)
+	if l != len(y) {
 		return
 	}
-	if lx < 3 {
+	if l < 3 {
 		return
 	}
 	var p vector.Path
 	p.MoveTo(x[0], y[0])
-	for i := 1; i < lx; i++ {
+	for i := 1; i < l; i++ {
 		p.LineTo(x[i], y[i])
 	}
-	p.Close()
-	vector.DrawFilledPath(screen, &p, fillcolor, true, vector.FillRuleEvenOdd)
+	vector.DrawFilledPath(screen, &p, fillcolor, true, vector.FillRuleNonZero)
 }
 
 // quadcurve draws a filled quadradic bezier curve beginning at (x1,y1),
@@ -140,6 +145,8 @@ func strokedquadcurve(screen *ebiten.Image, x1, y1, x2, y2, x3, y3, sw float32, 
 	vector.StrokePath(screen, &p, strokecolor, true, &op)
 }
 
+// cubecurve makes a filled cubic Bezier curve beginning at (x1, y1),
+// control points at (x2,y2) and (x3,y3), ending at (x4,y4)
 func cubecurve(screen *ebiten.Image, x1, y1, x2, y2, x3, y3, x4, y4 float32, fillcolor color.NRGBA) {
 	var p vector.Path
 	p.MoveTo(x1, y1)
@@ -147,6 +154,8 @@ func cubecurve(screen *ebiten.Image, x1, y1, x2, y2, x3, y3, x4, y4 float32, fil
 	vector.DrawFilledPath(screen, &p, fillcolor, true, vector.FillRuleEvenOdd)
 }
 
+// strokedcubecurve strokes a cubic Bezier curve beginning at (x1, y1),
+// control points at (x2,y2) and (x3,y3), ending at (x4,y4)
 func strokedcubecurve(screen *ebiten.Image, x1, y1, x2, y2, x3, y3, x4, y4, sw float32, strokecolor color.NRGBA) {
 	var p vector.Path
 	p.MoveTo(x1, y1)
@@ -225,6 +234,16 @@ func (c *Canvas) CenterRect(x, y, w, h float32, fillcolor color.NRGBA) {
 	h = pct(h, ch)
 	x, y = dimen(x, y, cw, ch)
 	centerRect(c.Screen, x, y, w, h, fillcolor)
+}
+
+// CornerRect draws a filled rectangle centered at (x,y) with dimensions (w,h)
+// using percent-based coordinates and measures
+func (c *Canvas) CornerRect(x, y, w, h float32, fillcolor color.NRGBA) {
+	cw, ch := float32(c.Width), float32(c.Height)
+	w = pct(w, cw)
+	h = pct(h, ch)
+	x, y = dimen(x, y, cw, ch)
+	cornerRect(c.Screen, x, y, w, h, fillcolor)
 }
 
 // Rect draws a filled rectangle centered at (x,y) with dimensions (w,h)
@@ -341,7 +360,7 @@ func (c *Canvas) VLine(x1, y1, size, sw float32, strokecolor color.NRGBA) {
 
 // Text methods
 
-// Text draws text beginning at (x,y)
+// Text draws text contained in s, beginning at (x,y), at the specifed size
 // using percent-based coordinates and measures
 func (c *Canvas) Text(x, y, size float32, s string, textcolor color.NRGBA) {
 	cw, ch := float32(c.Width), float32(c.Height)
@@ -350,7 +369,7 @@ func (c *Canvas) Text(x, y, size float32, s string, textcolor color.NRGBA) {
 	btext(c.Screen, float64(cx), float64(cy), float64(size), s, textcolor)
 }
 
-// CText draws text centered at (x,y)
+// CText draws text contained in s centered at (x,y), at the specified size
 // using percent-based coordinates and measures
 func (c *Canvas) CText(x, y, size float32, s string, textcolor color.NRGBA) {
 	cw, ch := float32(c.Width), float32(c.Height)
@@ -359,13 +378,23 @@ func (c *Canvas) CText(x, y, size float32, s string, textcolor color.NRGBA) {
 	ctext(c.Screen, float64(cx), float64(cy), float64(size), s, textcolor)
 }
 
-// EText draws text with end point at (x,y)
+// TextMid is an alternative name for CText
+func (c *Canvas) TextMid(x, y, size float32, s string, textcolor color.NRGBA) {
+	c.CText(x, y, size, s, textcolor)
+}
+
+// EText draws text contained in s with end point at (x,y) at the specified size
 // using percent-based coordinates and measures
 func (c *Canvas) EText(x, y, size float32, s string, textcolor color.NRGBA) {
 	cw, ch := float32(c.Width), float32(c.Height)
 	cx, cy := dimen(x, y, cw, ch)
 	size = pct(size, cw)
 	etext(c.Screen, float64(cx), float64(cy), float64(size), s, textcolor)
+}
+
+// TextEnd is an alternative name for EText
+func (c *Canvas) TextEnd(x, y, size float32, s string, textcolor color.NRGBA) {
+	c.EText(x, y, size, s, textcolor)
 }
 
 // Utility Methods

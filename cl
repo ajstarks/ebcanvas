@@ -1,5 +1,6 @@
 api
 confetti
+echart
 eclipse
 hello
 lines
