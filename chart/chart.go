@@ -33,7 +33,7 @@ type ChartBox struct {
 const (
 	largest    = 1.797693134862315708145274237317043567981e+308
 	smallest   = -largest
-	fullcircle = 3.14159265358979323846264338327950288419716939937510582097494459 * 2
+	fullcircle = 360.0 // 3.14159265358979323846264338327950288419716939937510582097494459 * 2
 )
 
 const gridlw = 0.075
@@ -259,16 +259,16 @@ func (c *ChartBox) Pie(canvas *ec.Canvas, r float64) {
 	sum := datasum(c.Data)
 	a1 := 0.0
 	labelr := pr + 10
-	ts := pr / 10
+	ts := pr / 12
 	for _, d := range c.Data {
 		fillcolor := ec.ColorLookup(d.note)
 		pct := (d.value / sum)
 		a2 := (fullcircle * pct) + a1
-		mid := fullcircle - (a1 + (a2-a1)/2)
-		canvas.Arc(px, py, pr, float32(a1), float32(a2), fillcolor)
-		tx, ty := canvas.Polar(px, py, labelr, float32(mid))
-		lx, ly := canvas.Polar(px, py, labelr-ts, float32(mid))
-		canvas.CText(tx, ty, ts, fmt.Sprintf("%s (%.2f%%)", d.label, pct*100), fillcolor)
+		mid := (a1 + (a2-a1)/2)
+		canvas.Wedge(px, py, pr, float32(a1), float32(a2), fillcolor)
+		tx, ty := canvas.PolarDegrees(px, py, labelr, float32(mid))
+		lx, ly := canvas.PolarDegrees(px, py, labelr, float32(mid))
+		canvas.Text(tx, ty, ts, fmt.Sprintf("%s (%.2f%%)", d.label, pct*100), fillcolor)
 		canvas.Line(px, py, lx, ly, 0.1, fillcolor)
 		a1 = a2
 	}
