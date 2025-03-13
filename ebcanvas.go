@@ -13,6 +13,8 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/vector"
 )
 
+const Pi = 3.14159265358979323846264338327950288419716939937510582097494459
+
 type Canvas struct {
 	Width, Height int
 	Screen        *ebiten.Image
@@ -51,7 +53,14 @@ func arc(screen *ebiten.Image, cx, cy, r, a1, a2 float32, fillcolor color.NRGBA)
 	vector.DrawFilledPath(screen, &p, fillcolor, true, vector.FillRuleEvenOdd)
 }
 
-// strokedarc strokes an arc centered at (cx,cy) with radius r, between angle a1 and a2
+// degreesToRadians converts degrees (0-360 counter-clockwise) to the
+// radian measures used by ebiten/vector
+func degreesToRadians(deg float32) float32 {
+	return (360 - deg) * (Pi / 180)
+}
+
+// strokedarc strokes an arc centered at (cx,cy) with radius r,
+// between angles a1 and a2 (degrees 0-360, counter-clockwise)
 func strokedarc(screen *ebiten.Image, cx, cy, r, a1, a2, size float32, strokecolor color.NRGBA) {
 	var p vector.Path
 	op := vector.StrokeOptions{Width: size}
@@ -207,23 +216,42 @@ func (c *Canvas) Image(x, y float32, scale float32, img image.Image) {
 
 // Shape methods
 
-// Arc draws an filled arc centered at (cx,cy) with radius r, between angle a1 and a2
-// using percent-based coordinates and measures
+// Arc draws an filled arc centered at (cx,cy) with radius r,
+// using percent-based coordinates and measures,
+// between angles a1 and a2 (0-360 degrees, counter-clockwise)
 func (c *Canvas) Arc(cx, cy, r, a1, a2 float32, fillcolor color.NRGBA) {
 	cw, ch := float32(c.Width), float32(c.Height)
 	cx, cy = dimen(cx, cy, cw, ch)
 	r = pct(r, cw)
+	a1 = degreesToRadians(a1)
+	a2 = degreesToRadians(a2)
 	arc(c.Screen, cx, cy, r, a1, a2, fillcolor)
 }
 
-// StrokedArc draws an stroked arc centered at (cx,cy) with radius r, between angle a1 and a2
-// using percent-based coordinates and measures
+// StrokedArc draws an stroked arc centered at (cx,cy) with radius r,
+// using percent-based coordinates and measures,
+// between angles a1 and a2 (0-360 degrees, counter-clockwise)
 func (c *Canvas) StrokedArc(cx, cy, r, a1, a2, size float32, strokecolor color.NRGBA) {
 	cw, ch := float32(c.Width), float32(c.Height)
 	cx, cy = dimen(cx, cy, cw, ch)
 	r = pct(r, cw)
 	size = pct(size, cw)
+	a1 = degreesToRadians(a1)
+	a2 = degreesToRadians(a2)
 	strokedarc(c.Screen, cx, cy, r, a1, a2, size, strokecolor)
+}
+
+// Wedge fills a wedge centered at (x,y), with radius r, using percentage-based
+// coordinates and measures.  The wedge is filled with fillcolor between
+// angles a1 and a2 (degrees between 0-360)
+func (c *Canvas) Wedge(cx, cy, r, a1, a2 float32, fillcolor color.NRGBA) {
+	px := make([]float32, 3)
+	py := make([]float32, 3)
+	px[0], py[0] = cx, cy
+	px[1], py[1] = c.PolarDegrees(cx, cy, r, a1)
+	px[2], py[2] = c.PolarDegrees(cx, cy, r, a2)
+	c.Polygon(px, py, fillcolor)
+	c.Arc(cx, cy, r, a1, a2, fillcolor)
 }
 
 // CenterRect draws a filled rectangle centered at (x,y) with dimensions (w,h)
@@ -430,7 +458,6 @@ func (c *Canvas) PolarDegrees(cx, cy, r, theta float32) (float32, float32) {
 	px := fr * math.Cos(ft)
 	py := (fr * aspect) * math.Sin(ft)
 	return cx + float32(px), cy + float32(py)
-
 }
 
 // Polar returns the Cartesian coordinates (x, y) from polar coordinates

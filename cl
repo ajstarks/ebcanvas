@@ -1,4 +1,5 @@
 api
+arc
 confetti
 echart
 eclipse

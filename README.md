@@ -98,10 +98,14 @@ CornerImage places an image with the upper left corner at (x,y) t the specified 
 
 # Shapes
 
-Arc draws filled or stroked arc centered at (cx,cy) with radius r, between angle a1 and a2
+Arc draws filled or stroked arc centered at (cx,cy) with radius r, between angle a1 and a2 (degrees 0-360)
 
 	(c *Canvas) Arc(cx, cy, r, a1, a2 float32, fillcolor color.NRGBA)
 	(c *Canvas) StrokedArc(cx, cy, r, a1, a2, size float32, strokecolor color.NRGBA)
+
+Wedge draws a wedge centered at (x,y) with radius r, between the angles a1 and a2 (0-360 degrees).
+
+	(c *Canvas) Wedge(x, y, r, a1 float32, fillcolor color.NRGBA)
 
 Rect draws a filled rectangle centered at (x,y) with dimensions (w,h)
 

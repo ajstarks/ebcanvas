@@ -93,8 +93,8 @@ func play(screen *ebiten.Image) {
 
 	// Arc
 	canvas.CText(cx2, 55, labelsize, "Arc", labelcolor)
-	canvas.Arc(cx2, 45, 5, 0, pi, tcolor)
-	canvas.StrokedArc(cx2, 45, 5, 0, pi, lw, stcolor)
+	canvas.Arc(cx2, 45, 5, 0, 180, tcolor)
+	canvas.StrokedArc(cx2, 45, 5, 0, 180, lw, stcolor)
 	canvas.Coord(cx2, 45, subsize, "center", labelcolor)
 
 	// Text
@@ -174,7 +174,7 @@ func main() {
 		fmt.Fprintf(os.Stderr, "%v\n", err)
 		return
 	}
-	drawgrid = false
+	drawgrid = true
 	if err := ebiten.RunGame(&App{}); err != nil {
 		fmt.Fprintf(os.Stderr, "%v\n", err)
 		return

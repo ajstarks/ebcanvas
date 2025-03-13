@@ -92,7 +92,7 @@ func work(screen *ebiten.Image) {
 		"Circle at (x,y), radius r",
 		"Rectangle centered at (x,y), dimensions (w,h)",
 		"Square centered at (x,y), size w",
-		"Arc centered at (x,y), radius r, between angles a1,a2",
+		"Arc centered at (x,y), radius r, between angles a1,a2 (deg)",
 		"Bezier curve; begin point: (bx,by), control: (cx,cy), end: (ex,ey)",
 		"Line between (x1,y1) and (x2,y2), horizontal or vertical (x1,y1), length",
 		"Polygon using points in (x,y)",
@@ -132,8 +132,8 @@ func work(screen *ebiten.Image) {
 
 	// Arc
 	yp -= vspace
-	canvas.Arc(objx, yp, halfhs, 0, pi, yellow)
-	canvas.StrokedArc(objx, yp, halfhs, 0, pi, linewidth, red)
+	canvas.Arc(objx, yp, halfhs, 0, 180, yellow)
+	canvas.StrokedArc(objx, yp, halfhs, 0, 180, linewidth, red)
 	canvas.Circle(objx, yp, dotsize, red)
 
 	// Curve
