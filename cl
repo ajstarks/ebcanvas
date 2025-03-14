@@ -1,5 +1,6 @@
 api
 arc
+compchart
 confetti
 echart
 eclipse

@@ -2,6 +2,13 @@
 for i in $(cat cl)
 do
 	cd $i
-	./$i &
+	case $i in
+	       echart)
+	           ./allcharts
+				;;
+			*)
+	           ./$i &
+				;;
+	esac
 	cd ..
 done
