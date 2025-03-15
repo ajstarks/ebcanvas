@@ -62,7 +62,7 @@ func work(screen *ebiten.Image) {
 		hspace    float32 = 10.0
 		halfhs    float32 = hspace / 2
 		halfvs    float32 = vspace / 2
-		objx      float32 = 80.0
+		objx      float32 = 85.0
 		linewidth float32 = dotsize / 2
 		pi                = 3.14159265359
 	)
@@ -84,7 +84,7 @@ func work(screen *ebiten.Image) {
 		"{Stroked}Arc(cx, cy, r, a1, a2, {,sw} float32, color color.NRGBA)",
 		"{Stroked}Curve(bx,by, cx,cy, ex,ey {,sw} float32, color color.NRGBA)",
 		`Line(x1,y1, x2,y2, sw float32, color color.NRGBA)`,
-		"Polygon(x,y []float32, color color.NRGBA)",
+		"{Stroked}Polygon(x,y {,sw} float32, color color.NRGBA)",
 		"{Corner}Image(x,y, scale float32,img image.Image)",
 	}
 	funcdesc := []string{
@@ -92,10 +92,10 @@ func work(screen *ebiten.Image) {
 		"Circle at (x,y), radius r",
 		"Rectangle centered at (x,y), dimensions (w,h)",
 		"Square centered at (x,y), size w",
-		"Arc centered at (x,y), radius r, between angles a1,a2 (deg)",
-		"Bezier curve; begin point: (bx,by), control: (cx,cy), end: (ex,ey)",
-		"Line between (x1,y1) and (x2,y2), horizontal or vertical (x1,y1), length",
-		"Polygon using points in (x,y)",
+		"Stroked or filled arc centered at (x,y), radius r, between angles a1,a2 (deg)",
+		"Stroked or filled Quadradic Bézier curve; begin: (bx,by), control: (cx,cy), end: (ex,ey)",
+		"Line between (x1,y1) and (x2,y2). Horizontal or vertical: (x1,y1), length",
+		"Stroked or filled Polygon using points in (x,y)",
 		"Image anchored at the top left corner or center at (x,y)",
 	}
 	for i, ly := 0, yp; i < len(funcnames); i++ {
@@ -105,14 +105,15 @@ func work(screen *ebiten.Image) {
 	}
 
 	// Text
+	message := "hello"
 	labelx := objx - halfhs
-	canvas.CText(labelx, yp, textsize, "hello", txcolor)
+	canvas.CText(labelx, yp, textsize, message, txcolor)
 	canvas.Circle(labelx, yp, dotsize, red)
 	labelx += hspace
-	canvas.EText(labelx, yp, textsize, "hello", txcolor)
+	canvas.EText(labelx, yp, textsize, message, txcolor)
 	canvas.Circle(labelx, yp, dotsize, red)
-	labelx += halfhs
-	canvas.Text(labelx, yp, textsize, "hello", txcolor)
+	labelx += hspace * 0.4
+	canvas.Text(labelx, yp, textsize, message, txcolor)
 	canvas.Circle(labelx, yp, dotsize, red)
 
 	// Circle
@@ -164,6 +165,7 @@ func work(screen *ebiten.Image) {
 	for i := 0; i < len(px); i++ {
 		canvas.Circle(px[i], py[i], dotsize, red)
 	}
+	canvas.StrokedPolygon(px, py, linewidth*2, txcolor)
 	canvas.Polygon(px, py, magenta)
 
 	// Image

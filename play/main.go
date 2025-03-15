@@ -139,6 +139,7 @@ func play(screen *ebiten.Image) {
 	for i := 0; i < len(xp); i++ {
 		canvas.Coord(xp[i], yp[i], subsize, fmt.Sprintf("P%d", i), labelcolor)
 	}
+	canvas.StrokedPolygon(xp, yp, lw, sfcolor)
 	canvas.Polygon(xp, yp, fcolor)
 
 	colx += 30

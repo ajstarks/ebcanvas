@@ -335,12 +335,11 @@ func (c *Canvas) Polygon(x, y []float32, fillcolor color.NRGBA) {
 // StrokedPolygon strokes a polygon of the specified size and color, using the points in x and y,
 // using percent-based coordinates and measures
 func (c *Canvas) StrokedPolygon(x, y []float32, size float32, strokecolor color.NRGBA) {
-	cw, ch := float32(c.Width), float32(c.Height)
-	for i := 0; i < len(x); i++ {
-		x[i], y[i] = dimen(x[i], y[i], cw, ch)
+	l := len(x) - 1
+	for i := 0; i < l; i++ {
+		c.Line(x[i], y[i], x[i+1], y[i+1], size, strokecolor)
 	}
-	size = pct(size, cw)
-	strokedpolygon(c.Screen, x, y, size, strokecolor)
+	c.Line(x[l], y[l], x[0], y[0], size, strokecolor)
 }
 
 // Quadcurve draws a filled quadradic bezier curve beginning at (x1,y1),
