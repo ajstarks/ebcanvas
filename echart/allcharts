@@ -1,5 +1,5 @@
 #!/bin/sh
-opts="-zero=f -h=600 -xlabel=10 -yrange=-1,1,0.25 -yfmt=%0.2f -grid"
+opts="-zero=f -opacity=100 -h=600 -xlabel=10 -yrange=-1,1,0.25 -yfmt=%0.2f -grid"
 ./echart $opts -area                                                   sin.d &
 ./echart $opts -bar                                                    sin.d &
 ./echart $opts -line                                                   sin.d &
