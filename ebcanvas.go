@@ -135,6 +135,24 @@ func polygon(screen *ebiten.Image, x, y []float32, fillcolor color.NRGBA) {
 	vector.DrawFilledPath(screen, &p, fillcolor, true, vector.FillRuleNonZero)
 }
 
+// strokedPolygon
+func strokedpolygon(screen *ebiten.Image, x, y []float32, size float32, strokecolor color.NRGBA) {
+	l := len(x)
+	if l != len(y) {
+		return
+	}
+	if l < 3 {
+		return
+	}
+	var p vector.Path
+	p.MoveTo(x[0], y[0])
+	for i := 1; i < l; i++ {
+		p.LineTo(x[i], y[i])
+	}
+	op := vector.StrokeOptions{Width: size}
+	vector.StrokePath(screen, &p, strokecolor, true, &op)
+}
+
 // quadcurve draws a filled quadradic bezier curve beginning at (x1,y1),
 // with control point at (x2,y2), ending at (x3,y3)
 func quadcurve(screen *ebiten.Image, x1, y1, x2, y2, x3, y3 float32, fillcolor color.NRGBA) {
@@ -314,6 +332,17 @@ func (c *Canvas) Polygon(x, y []float32, fillcolor color.NRGBA) {
 	polygon(c.Screen, x, y, fillcolor)
 }
 
+// StrokedPolygon strokes a polygon of the specified size and color, using the points in x and y,
+// using percent-based coordinates and measures
+func (c *Canvas) StrokedPolygon(x, y []float32, size float32, strokecolor color.NRGBA) {
+	cw, ch := float32(c.Width), float32(c.Height)
+	for i := 0; i < len(x); i++ {
+		x[i], y[i] = dimen(x[i], y[i], cw, ch)
+	}
+	size = pct(size, cw)
+	strokedpolygon(c.Screen, x, y, size, strokecolor)
+}
+
 // Quadcurve draws a filled quadradic bezier curve beginning at (x1,y1),
 // with control point at (x2,y2). ending at (x3,y3),
 // using percent-based coordinates and measures
@@ -443,11 +472,6 @@ func (c *Canvas) Grid(x, y, w, h, size, interval float32, strokecolor color.NRGB
 	}
 }
 
-// MapRange maps a value between low1 and high1, return the corresponding value between low2 and high2
-func MapRange(value, low1, high1, low2, high2 float64) float64 {
-	return low2 + (high2-low2)*(value-low1)/(high1-low1)
-}
-
 // PolarDegrees returns the Cartesian coordinates (x, y) from polar coordinates
 // with compensation for canvas aspect ratio
 // center at (cx, cy), radius r, and angle theta (degrees)
@@ -485,4 +509,9 @@ func (c *Canvas) Coord(x, y, size float32, s string, fillcolor color.NRGBA) {
 	if len(s) > 0 {
 		c.CText(x, y-(size*1.33), size*0.66, s, fillcolor)
 	}
+}
+
+// MapRange maps a value between low1 and high1, return the corresponding value between low2 and high2
+func MapRange(value, low1, high1, low2, high2 float64) float64 {
+	return low2 + (high2-low2)*(value-low1)/(high1-low1)
 }
