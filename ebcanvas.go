@@ -135,24 +135,6 @@ func polygon(screen *ebiten.Image, x, y []float32, fillcolor color.NRGBA) {
 	vector.DrawFilledPath(screen, &p, fillcolor, true, vector.FillRuleNonZero)
 }
 
-// strokedPolygon
-func strokedpolygon(screen *ebiten.Image, x, y []float32, size float32, strokecolor color.NRGBA) {
-	l := len(x)
-	if l != len(y) {
-		return
-	}
-	if l < 3 {
-		return
-	}
-	var p vector.Path
-	p.MoveTo(x[0], y[0])
-	for i := 1; i < l; i++ {
-		p.LineTo(x[i], y[i])
-	}
-	op := vector.StrokeOptions{Width: size}
-	vector.StrokePath(screen, &p, strokecolor, true, &op)
-}
-
 // quadcurve draws a filled quadradic bezier curve beginning at (x1,y1),
 // with control point at (x2,y2), ending at (x3,y3)
 func quadcurve(screen *ebiten.Image, x1, y1, x2, y2, x3, y3 float32, fillcolor color.NRGBA) {
