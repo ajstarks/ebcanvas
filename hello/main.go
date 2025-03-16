@@ -8,19 +8,24 @@ import (
 
 	"github.com/ajstarks/ebcanvas"
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/inpututil"
 )
 
 type App struct{}
 
-func (g *App) Update() error {
+func (a *App) Update() error {
+	if inpututil.IsKeyJustPressed(ebiten.KeyQ) ||
+		inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
+		os.Exit(0)
+	}
 	return nil
 }
 
-func (g *App) Layout(outsideWidth, outsideHeight int) (int, int) {
+func (a *App) Layout(outsideWidth, outsideHeight int) (int, int) {
 	return screenWidth, screenHeight
 }
 
-func (g *App) Draw(screen *ebiten.Image) {
+func (a *App) Draw(screen *ebiten.Image) {
 	hello(screen)
 }
 

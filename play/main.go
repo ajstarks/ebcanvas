@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"image"
 	"image/color"
@@ -8,6 +9,7 @@ import (
 
 	"github.com/ajstarks/ebcanvas"
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/inpututil"
 )
 
 type Point struct {
@@ -16,23 +18,27 @@ type Point struct {
 
 type App struct{}
 
-func (g *App) Update() error {
+func (a *App) Update() error {
+	if inpututil.IsKeyJustPressed(ebiten.KeyQ) ||
+		inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
+		os.Exit(0)
+	}
 	return nil
 }
 
-func (g *App) Layout(outsideWidth, outsideHeight int) (int, int) {
+func (a *App) Layout(outsideWidth, outsideHeight int) (int, int) {
 	return screenWidth, screenHeight
 }
 
-func (g *App) Draw(screen *ebiten.Image) {
+func (a *App) Draw(screen *ebiten.Image) {
 	play(screen)
 }
 
 const pi = 3.14159265359
 
 var (
-	screenWidth  = 1600
-	screenHeight = 1000
+	screenWidth  int
+	screenHeight int
 	tcolor       = color.NRGBA{128, 0, 0, 50}
 	fcolor       = color.NRGBA{0, 0, 128, 50}
 	stcolor      = color.NRGBA{128, 0, 0, 255}
@@ -40,7 +46,7 @@ var (
 	bgcolor      = color.NRGBA{255, 255, 255, 255}
 	gridcolor    = color.NRGBA{128, 128, 128, 50}
 	labelcolor   = color.NRGBA{50, 50, 50, 255}
-	earth, logo  image.Image
+	earth        image.Image
 	drawgrid     bool
 )
 
@@ -72,7 +78,7 @@ func play(screen *ebiten.Image) {
 	canvas.Background(bgcolor)
 
 	colx = 20
-	canvas.Text(colx-10, 92, titlesize, "Ebiten Canvas API", labelcolor)
+	canvas.CText(50, 92, titlesize, "Ebiten Canvas API", labelcolor)
 
 	// Lines
 	canvas.CText(colx, 80, labelsize, "Line", labelcolor)
@@ -139,8 +145,8 @@ func play(screen *ebiten.Image) {
 	for i := 0; i < len(xp); i++ {
 		canvas.Coord(xp[i], yp[i], subsize, fmt.Sprintf("P%d", i), labelcolor)
 	}
-	canvas.StrokedPolygon(xp, yp, lw, sfcolor)
-	canvas.Polygon(xp, yp, fcolor)
+	canvas.StrokedPolygon(xp, yp, lw, stcolor)
+	canvas.Polygon(xp, yp, tcolor)
 
 	colx += 30
 	// Rectangles
@@ -155,7 +161,7 @@ func play(screen *ebiten.Image) {
 
 	// Image
 	canvas.CText(colx, 30, labelsize, "Image", labelcolor)
-	canvas.Image(colx, 15, 15, earth)
+	canvas.Image(colx, 15, (float32(screenWidth)/1000)*10, earth)
 	canvas.Coord(colx, 15, subsize, "", color.NRGBA{255, 255, 255, 255})
 
 	if drawgrid {
@@ -164,6 +170,12 @@ func play(screen *ebiten.Image) {
 }
 
 func main() {
+
+	flag.BoolVar(&drawgrid, "grid", false, "draw a grid")
+	flag.IntVar(&screenWidth, "width", 1600, "canvas width")
+	flag.IntVar(&screenHeight, "height", 1000, "canvas height")
+	flag.Parse()
+
 	ebiten.SetWindowSize(screenWidth, screenHeight)
 	ebiten.SetWindowTitle("play")
 
@@ -175,7 +187,6 @@ func main() {
 		fmt.Fprintf(os.Stderr, "%v\n", err)
 		return
 	}
-	drawgrid = true
 	if err := ebiten.RunGame(&App{}); err != nil {
 		fmt.Fprintf(os.Stderr, "%v\n", err)
 		return
