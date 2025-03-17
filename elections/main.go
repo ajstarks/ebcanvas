@@ -11,14 +11,12 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/ajstarks/ebcanvas"
 	ec "github.com/ajstarks/ebcanvas"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 )
 
 type App struct {
-	elections      []election
 	electionNumber int
 	ne             int
 }
@@ -225,7 +223,7 @@ func endPage(canvas *ec.Canvas) {
 
 // elect processes election data
 func elect(a *App, screen *ebiten.Image) {
-	canvas := new(ebcanvas.Canvas)
+	canvas := new(ec.Canvas)
 	canvas.Screen = screen
 	canvas.Width = screenWidth
 	canvas.Height = screenHeight
