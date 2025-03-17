@@ -54,29 +54,28 @@ var (
 func (a *App) Update() error {
 	_, wy := ebiten.Wheel()
 
-	if inpututil.IsKeyJustPressed(ebiten.KeyQ) ||
-		inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
+	switch {
+	case inpututil.IsKeyJustPressed(ebiten.KeyQ) ||
+		inpututil.IsKeyJustPressed(ebiten.KeyEscape):
 		os.Exit(0)
-	}
-	if inpututil.IsKeyJustPressed(ebiten.KeyA) {
+
+	case inpututil.IsKeyJustPressed(ebiten.KeyHome):
 		a.electionNumber = 0
-	}
-	if inpututil.IsKeyJustPressed(ebiten.KeyP) ||
-		inpututil.IsKeyJustPressed(ebiten.KeyArrowDown) ||
-		inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonRight) ||
-		inpututil.IsKeyJustPressed(ebiten.KeyArrowLeft) ||
-		wy > 0 {
-		a.electionNumber--
-	}
-	if inpututil.IsKeyJustPressed(ebiten.KeyN) ||
-		inpututil.IsKeyJustPressed(ebiten.KeyArrowUp) ||
-		inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) ||
-		inpututil.IsKeyJustPressed(ebiten.KeyArrowRight) ||
-		wy < 0 {
-		a.electionNumber++
-	}
-	if inpututil.IsKeyJustPressed(ebiten.KeyE) {
+
+	case inpututil.IsKeyJustPressed(ebiten.KeyEnd):
 		a.electionNumber = a.ne
+
+	case inpututil.IsKeyJustPressed(ebiten.KeyArrowDown) ||
+		inpututil.IsKeyJustPressed(ebiten.KeyArrowLeft) ||
+		inpututil.IsKeyJustPressed(ebiten.KeyPageDown) ||
+		inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonRight) || wy > 0:
+		a.electionNumber--
+
+	case inpututil.IsKeyJustPressed(ebiten.KeyArrowUp) ||
+		inpututil.IsKeyJustPressed(ebiten.KeyArrowRight) ||
+		inpututil.IsKeyJustPressed(ebiten.KeyPageUp) ||
+		inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) || wy < 0:
+		a.electionNumber++
 	}
 	return nil
 }
@@ -240,7 +239,7 @@ func elect(a *App, screen *ebiten.Image) {
 func main() {
 	// parse command line options
 	flag.Float64Var(&opts.top, "top", 75, "map top value (canvas %)")
-	flag.Float64Var(&opts.left, "left", 7, "map left value (canvas %)")
+	flag.Float64Var(&opts.left, "left", 15, "map left value (canvas %)")
 	flag.Float64Var(&opts.rowsize, "rowsize", 9, "rowsize (canvas %)")
 	flag.Float64Var(&opts.colsize, "colsize", 7, "column size (canvas %)")
 	flag.IntVar(&screenWidth, "width", 1200, "canvas width")
