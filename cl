@@ -4,6 +4,7 @@ compchart
 confetti
 echart
 eclipse
+elections
 hello
 lines
 mondrian

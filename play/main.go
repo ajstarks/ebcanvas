@@ -105,6 +105,10 @@ func play(screen *ebiten.Image) {
 
 	// Text
 	tx := cx1 + (cx2-cx1)/2
+
+	canvas.RText(tx, 10, 0, subsize, "Rotated", labelcolor)
+	canvas.Circle(tx, 10, subsize/4, labelcolor)
+
 	canvas.CText(tx, 30, labelsize, "Text", labelcolor)
 	canvas.Text(tx, 25, subsize, "Begin-aligned", labelcolor)
 	canvas.Circle(tx, 25, subsize/4, labelcolor)

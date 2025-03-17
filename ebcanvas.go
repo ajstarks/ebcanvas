@@ -70,10 +70,11 @@ func strokedarc(screen *ebiten.Image, cx, cy, r, a1, a2, size float32, strokecol
 
 // btext draws text beginning at (x,y)
 func btext(screen *ebiten.Image, x, y float64, size float64, s string, textcolor color.NRGBA) {
+	ff := &text.GoTextFace{Source: mplusFaceSource, Size: size}
 	op := &text.DrawOptions{}
 	op.GeoM.Translate(x, y-size)
 	op.ColorScale.ScaleWithColor(textcolor)
-	text.Draw(screen, s, &text.GoTextFace{Source: mplusFaceSource, Size: size}, op)
+	text.Draw(screen, s, ff, op)
 }
 
 // ctext draws text centered at (x,y)
@@ -92,6 +93,16 @@ func etext(screen *ebiten.Image, x, y float64, size float64, s string, textcolor
 	tw := text.Advance(s, ff)
 	op := &text.DrawOptions{}
 	op.GeoM.Translate(x-tw, y-size)
+	op.ColorScale.ScaleWithColor(textcolor)
+	text.Draw(screen, s, ff, op)
+}
+
+// rtext draws rotated text (angle theta (radians)), starting at (x,y)
+func rtext(screen *ebiten.Image, x, y float64, size, theta float64, s string, textcolor color.NRGBA) {
+	ff := &text.GoTextFace{Source: mplusFaceSource, Size: size}
+	op := &text.DrawOptions{}
+	op.GeoM.Translate(x, y-size)
+	op.GeoM.Rotate(theta)
 	op.ColorScale.ScaleWithColor(textcolor)
 	text.Draw(screen, s, ff, op)
 }
@@ -433,6 +444,15 @@ func (c *Canvas) EText(x, y, size float32, s string, textcolor color.NRGBA) {
 // TextEnd is an alternative name for EText
 func (c *Canvas) TextEnd(x, y, size float32, s string, textcolor color.NRGBA) {
 	c.EText(x, y, size, s, textcolor)
+}
+
+// RText draws rotated text at (x,y), rotated at the specified angle
+func (c *Canvas) RText(x, y, angle, size float32, s string, textcolor color.NRGBA) {
+	cw, ch := float32(c.Width), float32(c.Height)
+	cx, cy := dimen(x, y, cw, ch)
+	size = pct(size, cw)
+	theta := float64(angle) * (Pi / 180)
+	rtext(c.Screen, float64(cx), float64(cy), theta, float64(size), s, textcolor)
 }
 
 // Utility Methods

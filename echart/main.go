@@ -1,4 +1,4 @@
-// gchart -- command line chart using ebcanvas chart package
+// echart -- command line chart using ebcanvas chart package
 package main
 
 import (
@@ -12,6 +12,7 @@ import (
 	"github.com/ajstarks/ebcanvas"
 	"github.com/ajstarks/ebcanvas/chart"
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/inpututil"
 )
 
 var opts chartOptions
@@ -21,6 +22,10 @@ var data chart.ChartBox
 type App struct{}
 
 func (g *App) Update() error {
+	if inpututil.IsKeyJustPressed(ebiten.KeyQ) ||
+		inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
+		os.Exit(0)
+	}
 	return nil
 }
 
