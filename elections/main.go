@@ -11,7 +11,7 @@ import (
 	"strconv"
 	"strings"
 
-	ec "github.com/ajstarks/ebcanvas"
+	"github.com/ajstarks/ebcanvas"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 )
@@ -68,13 +68,13 @@ func (a *App) Update() error {
 	case inpututil.IsKeyJustPressed(ebiten.KeyArrowDown) ||
 		inpututil.IsKeyJustPressed(ebiten.KeyArrowLeft) ||
 		inpututil.IsKeyJustPressed(ebiten.KeyPageDown) ||
-		inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonRight) || wy > 0:
+		inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonRight) || wy < 0:
 		a.electionNumber--
 
 	case inpututil.IsKeyJustPressed(ebiten.KeyArrowUp) ||
 		inpututil.IsKeyJustPressed(ebiten.KeyArrowRight) ||
 		inpututil.IsKeyJustPressed(ebiten.KeyPageUp) ||
-		inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) || wy < 0:
+		inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) || wy > 0:
 		a.electionNumber++
 	}
 	return nil
@@ -156,7 +156,7 @@ func readData(r io.Reader) (election, error) {
 }
 
 // process walks the data, making the visualization
-func process(canvas *ec.Canvas, e election) {
+func process(canvas *ebcanvas.Canvas, e election) {
 	amin := area(float64(e.min))
 	amax := area(float64(e.max))
 	beginPage(canvas, opts.bgcolor)
@@ -164,7 +164,7 @@ func process(canvas *ec.Canvas, e election) {
 	for _, d := range e.data {
 		x := opts.left + (float64(d.row) * opts.colsize)
 		y := opts.top - (float64(d.col) * opts.rowsize)
-		r := ec.MapRange(area(float64(d.population)), amin, amax, 2, opts.colsize)
+		r := ebcanvas.MapRange(area(float64(d.population)), amin, amax, 2, opts.colsize)
 		circle(canvas, x, y, r, partyColors[d.party])
 		ctext(canvas, x, y-0.5, 1.2, d.name, "white")
 	}
@@ -172,7 +172,7 @@ func process(canvas *ec.Canvas, e election) {
 }
 
 // showtitle shows the title and subhead
-func showtitle(canvas *ec.Canvas, s string, top float64, textcolor string) {
+func showtitle(canvas *ebcanvas.Canvas, s string, top float64, textcolor string) {
 	fields := strings.Fields(s) // year, democratic, republican, third-party (optional)
 	if len(fields) < 3 {
 		return
@@ -187,42 +187,42 @@ func showtitle(canvas *ec.Canvas, s string, top float64, textcolor string) {
 }
 
 // circle makes a circle
-func circle(canvas *ec.Canvas, x, y, r float64, color string) {
+func circle(canvas *ebcanvas.Canvas, x, y, r float64, color string) {
 	cx, cy, cr := float32(x), float32(y), float32(r)
-	canvas.Circle(cx, cy, cr/2, ec.ColorLookup(color))
+	canvas.Circle(cx, cy, cr/2, ebcanvas.ColorLookup(color))
 }
 
 // ctext makes centered text
-func ctext(canvas *ec.Canvas, x, y, size float64, s string, color string) {
+func ctext(canvas *ebcanvas.Canvas, x, y, size float64, s string, color string) {
 	tx, ty, ts := float32(x), float32(y), float32(size)
-	canvas.CText(tx, ty, ts, s, ec.ColorLookup(color))
+	canvas.CText(tx, ty, ts, s, ebcanvas.ColorLookup(color))
 }
 
 // ltext makes left-aligned text
-func ltext(canvas *ec.Canvas, x, y, size float64, s string, color string) {
+func ltext(canvas *ebcanvas.Canvas, x, y, size float64, s string, color string) {
 	tx, ty, ts := float32(x), float32(y), float32(size)
-	canvas.Text(tx, ty, ts, s, ec.ColorLookup(color))
+	canvas.Text(tx, ty, ts, s, ebcanvas.ColorLookup(color))
 }
 
 // legend makes the subtitle
-func legend(canvas *ec.Canvas, x, y, ts float64, s string, color, textcolor string) {
+func legend(canvas *ebcanvas.Canvas, x, y, ts float64, s string, color, textcolor string) {
 	ltext(canvas, x, y, ts, s, textcolor)
 	circle(canvas, x-ts, y+ts/3, ts/2, color)
 }
 
 // beginPage starts a page
-func beginPage(canvas *ec.Canvas, bgcolor string) {
-	canvas.Background(ec.ColorLookup(bgcolor))
+func beginPage(canvas *ebcanvas.Canvas, bgcolor string) {
+	canvas.Background(ebcanvas.ColorLookup(bgcolor))
 }
 
 // endPage ends a page
-func endPage(canvas *ec.Canvas) {
+func endPage(canvas *ebcanvas.Canvas) {
 	ctext(canvas, 50, 5, 1.5, "The area of a circle denotes state population: source U.S. Census", "gray")
 }
 
 // elect processes election data
 func elect(a *App, screen *ebiten.Image) {
-	canvas := new(ec.Canvas)
+	canvas := new(ebcanvas.Canvas)
 	canvas.Screen = screen
 	canvas.Width = screenWidth
 	canvas.Height = screenHeight
@@ -267,7 +267,7 @@ func main() {
 		fmt.Fprintln(os.Stderr, "no data read")
 		os.Exit(1)
 	}
-	if err := ec.LoadFont(); err != nil {
+	if err := ebcanvas.LoadFont(); err != nil {
 		fmt.Fprintf(os.Stderr, "%v\n", err)
 		os.Exit(2)
 	}
