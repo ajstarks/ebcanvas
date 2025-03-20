@@ -47,7 +47,7 @@ type options struct {
 var (
 	elections                 []election
 	opts                      options
-	partyColors               = map[string]string{"r": "red", "d": "blue", "i": "gray"}
+	partyColors               = map[string]string{"r": "red", "d": "blue", "i": "gray", "w": "red"}
 	screenWidth, screenHeight int
 )
 
@@ -86,6 +86,12 @@ func (a *App) Layout(outsideWidth, outsideHeight int) (int, int) {
 
 func (a *App) Draw(screen *ebiten.Image) {
 	elect(a, screen)
+}
+
+func million(n int64) string {
+	s := strconv.FormatInt(n, 10)
+	p := len(s)
+	return "Population: " + s[0:p-6] + "," + s[p-6:p-3] + "," + s[p-3:p]
 }
 
 // area computes the area of a circle
@@ -160,27 +166,35 @@ func process(canvas *ebcanvas.Canvas, e election) {
 	amin := area(float64(e.min))
 	amax := area(float64(e.max))
 	beginPage(canvas, opts.bgcolor)
-	showtitle(canvas, e.title, opts.top+15, opts.textcolor)
+	var pop int64 = 0
 	for _, d := range e.data {
+		pop += d.population
 		x := opts.left + (float64(d.row) * opts.colsize)
 		y := opts.top - (float64(d.col) * opts.rowsize)
 		r := ebcanvas.MapRange(area(float64(d.population)), amin, amax, 2, opts.colsize)
 		circle(canvas, x, y, r, partyColors[d.party])
 		ctext(canvas, x, y-0.5, 1.2, d.name, "white")
 	}
+	showtitle(canvas, e.title, pop, opts.top+15, opts.textcolor)
 	endPage(canvas)
 }
 
 // showtitle shows the title and subhead
-func showtitle(canvas *ebcanvas.Canvas, s string, top float64, textcolor string) {
+func showtitle(canvas *ebcanvas.Canvas, s string, pop int64, top float64, textcolor string) {
 	fields := strings.Fields(s) // year, democratic, republican, third-party (optional)
-	if len(fields) < 3 {
+	if len(fields) < 2 {
 		return
 	}
 	suby := top - 7
 	ctext(canvas, 50, top, 3.6, fields[0]+" US Presidential Election", textcolor)
-	legend(canvas, 20, suby, 2.0, fields[1], partyColors["d"], textcolor)
-	legend(canvas, 80, suby, 2.0, fields[2], partyColors["r"], textcolor)
+	ctext(canvas, 90, 5, 1.5, million(pop), textcolor)
+
+	if len(fields) > 1 {
+		legend(canvas, 20, suby, 2.0, fields[1], partyColors["d"], textcolor)
+	}
+	if len(fields) > 2 {
+		legend(canvas, 80, suby, 2.0, fields[2], partyColors["r"], textcolor)
+	}
 	if len(fields) > 3 {
 		legend(canvas, 50, suby, 2.0, fields[3], partyColors["i"], textcolor)
 	}
