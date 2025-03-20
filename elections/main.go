@@ -47,8 +47,8 @@ type options struct {
 var (
 	elections                 []election
 	opts                      options
-	partyColors               = map[string]string{"r": "red", "d": "blue", "i": "gray", "w": "red"}
 	screenWidth, screenHeight int
+	partyColors               = map[string]string{"r": "red", "d": "blue", "i": "gray", "w": "red", "dr": "purple", "f": "orange"}
 )
 
 func (a *App) Update() error {
@@ -179,6 +179,19 @@ func process(canvas *ebcanvas.Canvas, e election) {
 	endPage(canvas)
 }
 
+func partycand(s, def string) (string, string) {
+	var party, cand string
+	f := strings.Split(s, ":")
+	if len(f) > 1 {
+		party = f[1]
+		cand = f[0]
+	} else {
+		party = def
+		cand = s
+	}
+	return party, cand
+}
+
 // showtitle shows the title and subhead
 func showtitle(canvas *ebcanvas.Canvas, s string, pop int64, top float64, textcolor string) {
 	fields := strings.Fields(s) // year, democratic, republican, third-party (optional)
@@ -188,16 +201,21 @@ func showtitle(canvas *ebcanvas.Canvas, s string, pop int64, top float64, textco
 	suby := top - 7
 	ctext(canvas, 50, top, 3.6, fields[0]+" US Presidential Election", textcolor)
 	ctext(canvas, 90, 5, 1.5, million(pop), textcolor)
-
+	var party string
+	var cand string
 	if len(fields) > 1 {
-		legend(canvas, 20, suby, 2.0, fields[1], partyColors["d"], textcolor)
+		party, cand = partycand(fields[1], "d")
+		legend(canvas, 20, suby, 2.0, cand, partyColors[party], textcolor)
 	}
 	if len(fields) > 2 {
-		legend(canvas, 80, suby, 2.0, fields[2], partyColors["r"], textcolor)
+		party, cand = partycand(fields[2], "r")
+		legend(canvas, 80, suby, 2.0, cand, partyColors[party], textcolor)
 	}
 	if len(fields) > 3 {
-		legend(canvas, 50, suby, 2.0, fields[3], partyColors["i"], textcolor)
+		party, cand = partycand(fields[3], "i")
+		legend(canvas, 50, suby, 2.0, cand, partyColors[party], textcolor)
 	}
+
 }
 
 // circle makes a circle
