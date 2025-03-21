@@ -48,7 +48,7 @@ var (
 	elections                 []election
 	opts                      options
 	screenWidth, screenHeight int
-	partyColors               = map[string]string{"r": "red", "d": "blue", "i": "gray", "w": "red", "dr": "purple", "f": "orange"}
+	partyColors               = map[string]string{"r": "red", "d": "blue", "i": "gray", "w": "peru", "dr": "purple", "f": "green"}
 )
 
 func (a *App) Update() error {
