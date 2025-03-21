@@ -58,7 +58,7 @@ func work(screen *ebiten.Image) {
 		fx        float32 = 5.0
 		textsize  float32 = 2.25
 		dotsize   float32 = 0.5
-		vspace    float32 = 10.0
+		vspace    float32 = 9.0
 		hspace    float32 = 10.0
 		halfhs    float32 = hspace / 2
 		halfvs    float32 = vspace / 2
@@ -77,18 +77,20 @@ func work(screen *ebiten.Image) {
 
 	// API labels
 	funcnames := []string{
-		"{C,E}Text(x, y, size float32, s string,color color.NRGBA)",
-		"Circle(x, y, r float32,color color.NRGBA)",
-		"Rect(x, y, w, h float32, color color.NRGBA)",
-		"Square(x, y, w float32, color color.NRGBA)",
-		"{Stroked}Arc(cx, cy, r, a1, a2, {,sw} float32, color color.NRGBA)",
-		"{Stroked}Curve(bx,by, cx,cy, ex,ey {,sw} float32, color color.NRGBA)",
-		`Line(x1,y1, x2,y2, sw float32, color color.NRGBA)`,
-		"{Stroked}Polygon(x,y {,sw} float32, color color.NRGBA)",
+		"{C,E}Text(x, y, size float32, s string, c color.NRGBA)",
+		"TextWrap(x, y, w, size float32, s string, c color.NRGBA)",
+		"Circle(x, y, r float32, c color.NRGBA)",
+		"Rect(x, y, w, h float32, c color.NRGBA)",
+		"Square(x, y, w float32, c color.NRGBA)",
+		"{Stroked}Arc(cx, cy, r, a1, a2, {,sw} float32, c color.NRGBA)",
+		"{Stroked}Curve(bx,by, cx,cy, ex,ey {,sw} float32, c color.NRGBA)",
+		`Line(x1,y1, x2,y2, sw float32, c color.NRGBA)`,
+		"{Stroked}Polygon(x,y {,sw} float32, c color.NRGBA)",
 		"{Corner}Image(x,y, scale float32,img image.Image)",
 	}
 	funcdesc := []string{
 		"Centered, End, Start aligned text at (x,y)",
+		"Wrap text at (x,y) to width w",
 		"Circle at (x,y), radius r",
 		"Rectangle centered at (x,y), dimensions (w,h)",
 		"Square centered at (x,y), size w",
@@ -106,6 +108,7 @@ func work(screen *ebiten.Image) {
 
 	// Text
 	message := "hello"
+	wmessage := "This is text wrapped at a specified width"
 	labelx := objx - halfhs
 	canvas.CText(labelx, yp, textsize, message, txcolor)
 	canvas.Circle(labelx, yp, dotsize, red)
@@ -115,6 +118,8 @@ func work(screen *ebiten.Image) {
 	labelx += hspace * 0.4
 	canvas.Text(labelx, yp, textsize, message, txcolor)
 	canvas.Circle(labelx, yp, dotsize, red)
+	yp -= vspace
+	canvas.TextWrap(objx-hspace, yp+(halfvs/3), 20, textsize*0.8, wmessage, txcolor)
 
 	// Circle
 	yp -= vspace
@@ -139,7 +144,7 @@ func work(screen *ebiten.Image) {
 
 	// Curve
 	yp -= vspace
-	curvex := []float32{objx, objx + hspace, objx + hspace}
+	curvex := []float32{objx - halfhs, objx + halfhs, objx + halfhs}
 	curvey := []float32{yp, yp + halfvs, yp}
 	canvas.Curve(curvex[0], curvey[0], curvex[1], curvey[1], curvex[2], curvey[2], orange)
 	canvas.StrokedCurve(curvex[0], curvey[0], curvex[1], curvey[1], curvex[2], curvey[2], linewidth, red)
