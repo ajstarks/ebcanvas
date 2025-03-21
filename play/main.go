@@ -71,8 +71,10 @@ func play(screen *ebiten.Image) {
 	var colx float32
 	var lw float32 = 0.2
 	var labelsize float32 = 2
+	var wrap float32 = 15.0
 	titlesize := labelsize * 2
 	subsize := labelsize * 0.7
+	wrapfmt := `This is text wrapped at a specified width (%1.f%% of the canvas width).`
 
 	// Title
 	canvas.Background(bgcolor)
@@ -105,17 +107,14 @@ func play(screen *ebiten.Image) {
 
 	// Text
 	tx := cx1 + (cx2-cx1)/2
-
-	canvas.RText(tx, 10, 0, subsize, "Rotated", labelcolor)
-	canvas.Circle(tx, 10, subsize/4, labelcolor)
-
-	canvas.CText(tx, 30, labelsize, "Text", labelcolor)
 	canvas.Text(tx, 25, subsize, "Begin-aligned", labelcolor)
 	canvas.Circle(tx, 25, subsize/4, labelcolor)
 	canvas.CText(tx, 20, subsize, "Centered", labelcolor)
 	canvas.Circle(tx, 20, subsize/4, labelcolor)
 	canvas.EText(tx, 15, subsize, "End-aligned", labelcolor)
-	canvas.Circle(tx, 15, subsize/5, labelcolor)
+	canvas.Circle(tx, 15, subsize/4, labelcolor)
+	canvas.TextWrap(tx, 10, wrap, subsize, fmt.Sprintf(wrapfmt, wrap), labelcolor)
+	canvas.Circle(tx, 10, subsize/4, labelcolor)
 
 	// Quadradic Bezier
 	start := Point{X: 45, Y: 65}
@@ -172,7 +171,6 @@ func play(screen *ebiten.Image) {
 		canvas.Grid(0, 0, 100, 100, 0.1, 5, gridcolor)
 	}
 }
-
 func main() {
 
 	flag.BoolVar(&drawgrid, "grid", false, "draw a grid")

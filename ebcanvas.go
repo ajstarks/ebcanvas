@@ -6,6 +6,7 @@ import (
 	"image/color"
 	"math"
 	"strconv"
+	"strings"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/examples/resources/fonts"
@@ -105,6 +106,31 @@ func rtext(screen *ebiten.Image, x, y float64, size, theta float64, s string, te
 	op.GeoM.Rotate(theta)
 	op.ColorScale.ScaleWithColor(textcolor)
 	text.Draw(screen, s, ff, op)
+}
+
+// whitespace determines if a rune is whitespace
+func whitespace(r rune) bool {
+	return r == ' ' || r == '\n' || r == '\t'
+}
+
+func textwrap(screen *ebiten.Image, x, y, w, size float64, s string, color color.NRGBA) {
+	const factor = 0.3
+	leading := size * 1.2
+	ff := &text.GoTextFace{Source: mplusFaceSource, Size: size}
+	wordspacing := text.Advance("M", ff)
+	xp := x
+	yp := y
+	edge := x + w
+	words := strings.FieldsFunc(s, whitespace)
+	for _, s := range words {
+		tw := text.Advance(s, ff)
+		btext(screen, xp, yp, size, s, color)
+		xp += tw + (wordspacing * factor)
+		if xp >= edge {
+			xp = x
+			yp += leading
+		}
+	}
 }
 
 // centerRect draws a filled rectangle centered at (x,y) with dimensions (w,h)
@@ -453,6 +479,14 @@ func (c *Canvas) RText(x, y, angle, size float32, s string, textcolor color.NRGB
 	size = pct(size, cw)
 	theta := float64(angle) * (Pi / 180)
 	rtext(c.Screen, float64(cx), float64(cy), theta, float64(size), s, textcolor)
+}
+
+func (c *Canvas) TextWrap(x, y, w, size float32, s string, textcolor color.NRGBA) {
+	cw, ch := float32(c.Width), float32(c.Height)
+	cx, cy := dimen(x, y, cw, ch)
+	size = pct(size, cw)
+	w = pct(w, cw)
+	textwrap(c.Screen, float64(cx), float64(cy), float64(w), float64(size), s, textcolor)
 }
 
 // Utility Methods
