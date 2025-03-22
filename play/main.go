@@ -75,12 +75,14 @@ func play(screen *ebiten.Image) {
 	titlesize := labelsize * 2
 	subsize := labelsize * 0.7
 	wrapfmt := `This is text wrapped at a specified width (%1.f%% of the canvas width).`
+	apimsg := "A canvas API for ebiten, using high-level objects, and a percentage-based coordinate system. (https://github.com/ebcanvas)"
 
 	// Title
 	canvas.Background(bgcolor)
 
 	colx = 20
-	canvas.CText(50, 92, titlesize, "Ebiten Canvas API", labelcolor)
+	canvas.Text(10, 92, titlesize, "Ebiten Canvas API", labelcolor)
+	canvas.TextWrap(50, 96, 25, titlesize*.3, apimsg, labelcolor)
 
 	// Lines
 	canvas.CText(colx, 80, labelsize, "Line", labelcolor)
