@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"image"
 	"image/color"
 	"os"
 
@@ -23,8 +24,21 @@ func (g *App) Draw(screen *ebiten.Image) {
 	work(screen)
 }
 
+func loadAssets() error {
+	r, err := os.Open("douglass.jpg")
+	if err != nil {
+		return err
+	}
+	douglass, _, err = image.Decode(r)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 var screenWidth = 1000
 var screenHeight = 1000
+var douglass image.Image
 
 func work(screen *ebiten.Image) {
 	canvas := new(ebcanvas.Canvas)
@@ -37,10 +51,11 @@ func work(screen *ebiten.Image) {
 		cy        float32
 		r         float32
 		deg       float32
-		fillcolor = color.NRGBA{0, 0, 128, 255}
-		dotcolor  = color.NRGBA{128, 0, 0, 255}
-		txcolor   = fillcolor
-		bgcolor   = color.NRGBA{255, 255, 255, 255}
+		ts        float32 = 1.5
+		fillcolor         = color.NRGBA{0, 0, 128, 255}
+		dotcolor          = color.NRGBA{128, 0, 0, 255}
+		txcolor           = fillcolor
+		bgcolor           = color.NRGBA{255, 255, 255, 255}
 	)
 
 	canvas.Background(bgcolor)
@@ -50,9 +65,9 @@ func work(screen *ebiten.Image) {
 	wcolor := fillcolor
 	wcolor.A = 100
 
-	canvas.CText(50, 90, 3, "Arcs and Wedges", txcolor)
-	for deg = 0.0; deg < 360.0; deg += 30 {
-		canvas.CText(cx, cy-r*2, 1.5, fmt.Sprintf("%.0f°", deg), txcolor)
+	canvas.CText(50, 90, 3, "Arcs, Wedges, Rotated Text", txcolor)
+	for deg = 0; deg < 360; deg += 30 {
+		canvas.CText(cx, cy-r*2, ts, fmt.Sprintf("%.0f°", deg), txcolor)
 		canvas.Circle(cx, cy, r/10, dotcolor)
 		canvas.StrokedArc(cx, cy, r, 0, deg, 0.25, fillcolor)
 		canvas.Wedge(cx, cy, r, 0, deg, wcolor)
@@ -65,13 +80,22 @@ func work(screen *ebiten.Image) {
 
 	canvas.Wedge(50, 75, 10, 0, 90, dotcolor)
 	canvas.Wedge(50, 75, 10, 180, 270, txcolor)
+
+	for deg = 0; deg < 360; deg += 20 {
+		canvas.RText(50, 20, deg, 2.5, fmt.Sprintf("rotated: %.0f°", deg), txcolor)
+	}
+
 }
 
 func main() {
 	ebiten.SetWindowSize(screenWidth, screenHeight)
-	ebiten.SetScreenClearedEveryFrame(false)
 	ebiten.SetTPS(0)
 	ebiten.SetWindowTitle("arcs")
+
+	if err := loadAssets(); err != nil {
+		fmt.Fprintf(os.Stderr, "%v\n", err)
+		return
+	}
 
 	if err := ebcanvas.LoadFont(); err != nil {
 		fmt.Fprintf(os.Stderr, "%v\n", err)

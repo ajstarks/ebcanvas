@@ -74,7 +74,7 @@ func play(screen *ebiten.Image) {
 	var wrap float32 = 15.0
 	titlesize := labelsize * 2
 	subsize := labelsize * 0.7
-	wrapfmt := `This is text wrapped at a specified width (%1.f%% of the canvas width).`
+	wrapfmt := "This is text wrapped at a specified width (%1.f%% of the canvas width)."
 	apimsg := "A canvas API for ebiten, using high-level objects, and a percentage-based coordinate system. (https://github.com/ebcanvas)"
 
 	// Title
@@ -117,7 +117,8 @@ func play(screen *ebiten.Image) {
 	canvas.Circle(tx, 15, subsize/4, labelcolor)
 	canvas.TextWrap(tx, 10, wrap, subsize, fmt.Sprintf(wrapfmt, wrap), labelcolor)
 	canvas.Circle(tx, 10, subsize/4, labelcolor)
-
+	canvas.RText(cx1, 5, 45, subsize, "Rotated", labelcolor)
+	canvas.Circle(cx1, 5, subsize/4, labelcolor)
 	// Quadradic Bezier
 	start := Point{X: 45, Y: 65}
 	c1 := Point{X: 70, Y: 85}

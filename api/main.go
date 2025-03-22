@@ -77,7 +77,7 @@ func work(screen *ebiten.Image) {
 
 	// API labels
 	funcnames := []string{
-		"{C,E}Text(x, y, size float32, s string, c color.NRGBA)",
+		"{R,C,E}Text(x, y, {angle}, size float32, s string, c color.NRGBA)",
 		"TextWrap(x, y, w, size float32, s string, c color.NRGBA)",
 		"Circle(x, y, r float32, c color.NRGBA)",
 		"Rect(x, y, w, h float32, c color.NRGBA)",
@@ -89,7 +89,7 @@ func work(screen *ebiten.Image) {
 		"{Corner}Image(x,y, scale float32,img image.Image)",
 	}
 	funcdesc := []string{
-		"Centered, End, Start aligned text at (x,y)",
+		"Rorated, Centered, End, Start aligned text at (x,y)",
 		"Wrap text at (x,y) to width w",
 		"Circle at (x,y), radius r",
 		"Rectangle centered at (x,y), dimensions (w,h)",
@@ -117,7 +117,8 @@ func work(screen *ebiten.Image) {
 	canvas.Circle(labelx, yp, dotsize, red)
 	labelx += hspace * 0.4
 	canvas.Text(labelx, yp, textsize, message, txcolor)
-	canvas.Circle(labelx, yp, dotsize, red)
+	canvas.Circle(objx, yp+halfvs, dotsize, red)
+	canvas.RText(objx, yp+halfvs, 45, textsize, message, txcolor)
 	yp -= vspace
 	canvas.TextWrap(objx-hspace, yp+(halfvs/3), 20, textsize*0.8, wmessage, txcolor)
 

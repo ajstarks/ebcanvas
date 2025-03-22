@@ -14,7 +14,10 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/vector"
 )
 
-const Pi = 3.14159265358979323846264338327950288419716939937510582097494459
+const (
+	Pi    = 3.14159265358979323846264338327950288419716939937510582097494459
+	twoPi = 2 * Pi
+)
 
 type Canvas struct {
 	Width, Height int
@@ -99,11 +102,11 @@ func etext(screen *ebiten.Image, x, y float64, size float64, s string, textcolor
 }
 
 // rtext draws rotated text (angle theta (radians)), starting at (x,y)
-func rtext(screen *ebiten.Image, x, y float64, size, theta float64, s string, textcolor color.NRGBA) {
+func rtext(screen *ebiten.Image, x, y, theta, size float64, s string, textcolor color.NRGBA) {
 	ff := &text.GoTextFace{Source: mplusFaceSource, Size: size}
 	op := &text.DrawOptions{}
-	op.GeoM.Translate(x, y-size)
 	op.GeoM.Rotate(theta)
+	op.GeoM.Translate(x, y-size)
 	op.ColorScale.ScaleWithColor(textcolor)
 	text.Draw(screen, s, ff, op)
 }
@@ -113,11 +116,11 @@ func whitespace(r rune) bool {
 	return r == ' ' || r == '\n' || r == '\t'
 }
 
-func textwrap(screen *ebiten.Image, x, y, w, size float64, s string, color color.NRGBA) {
+// textwrap wraps text to the specified margin, starting at (x,y)
+func textwrap(screen *ebiten.Image, x, y, w, linespacing, size float64, s string, color color.NRGBA) {
 	const factor = 0.3
-	leading := size * 1.2
 	ff := &text.GoTextFace{Source: mplusFaceSource, Size: size}
-	wordspacing := text.Advance("M", ff)
+	wordspacing := text.Advance("M", ff) * factor
 	xp := x
 	yp := y
 	edge := x + w
@@ -125,10 +128,10 @@ func textwrap(screen *ebiten.Image, x, y, w, size float64, s string, color color
 	for _, s := range words {
 		tw := text.Advance(s, ff)
 		btext(screen, xp, yp, size, s, color)
-		xp += tw + (wordspacing * factor)
+		xp += tw + wordspacing
 		if xp >= edge {
 			xp = x
-			yp += leading
+			yp += linespacing
 		}
 	}
 }
@@ -453,6 +456,15 @@ func (c *Canvas) CText(x, y, size float32, s string, textcolor color.NRGBA) {
 	ctext(c.Screen, float64(cx), float64(cy), float64(size), s, textcolor)
 }
 
+// RText draws rotated text at (x,y), rotated at the specified angle
+func (c *Canvas) RText(x, y, angle, size float32, s string, textcolor color.NRGBA) {
+	cw, ch := float32(c.Width), float32(c.Height)
+	cx, cy := dimen(x, y, cw, ch)
+	size = pct(size, cw)
+	theta := degreesToRadians(angle)
+	rtext(c.Screen, float64(cx), float64(cy), float64(theta), float64(size), s, textcolor)
+}
+
 // TextMid is an alternative name for CText
 func (c *Canvas) TextMid(x, y, size float32, s string, textcolor color.NRGBA) {
 	c.CText(x, y, size, s, textcolor)
@@ -472,21 +484,14 @@ func (c *Canvas) TextEnd(x, y, size float32, s string, textcolor color.NRGBA) {
 	c.EText(x, y, size, s, textcolor)
 }
 
-// RText draws rotated text at (x,y), rotated at the specified angle
-func (c *Canvas) RText(x, y, angle, size float32, s string, textcolor color.NRGBA) {
-	cw, ch := float32(c.Width), float32(c.Height)
-	cx, cy := dimen(x, y, cw, ch)
-	size = pct(size, cw)
-	theta := float64(angle) * (Pi / 180)
-	rtext(c.Screen, float64(cx), float64(cy), theta, float64(size), s, textcolor)
-}
-
 func (c *Canvas) TextWrap(x, y, w, size float32, s string, textcolor color.NRGBA) {
+	const lsf = 1.2
 	cw, ch := float32(c.Width), float32(c.Height)
 	cx, cy := dimen(x, y, cw, ch)
 	size = pct(size, cw)
 	w = pct(w, cw)
-	textwrap(c.Screen, float64(cx), float64(cy), float64(w), float64(size), s, textcolor)
+	ls := float64(size * lsf)
+	textwrap(c.Screen, float64(cx), float64(cy), float64(w), ls, float64(size), s, textcolor)
 }
 
 // Utility Methods
