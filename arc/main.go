@@ -24,18 +24,6 @@ func (g *App) Draw(screen *ebiten.Image) {
 	work(screen)
 }
 
-func loadAssets() error {
-	r, err := os.Open("douglass.jpg")
-	if err != nil {
-		return err
-	}
-	douglass, _, err = image.Decode(r)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
 var screenWidth = 1000
 var screenHeight = 1000
 var douglass image.Image
@@ -91,11 +79,6 @@ func main() {
 	ebiten.SetWindowSize(screenWidth, screenHeight)
 	ebiten.SetTPS(0)
 	ebiten.SetWindowTitle("arcs")
-
-	if err := loadAssets(); err != nil {
-		fmt.Fprintf(os.Stderr, "%v\n", err)
-		return
-	}
 
 	if err := ebcanvas.LoadFont(); err != nil {
 		fmt.Fprintf(os.Stderr, "%v\n", err)
