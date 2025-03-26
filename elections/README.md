@@ -8,7 +8,7 @@
 elections [options] file...
 
 each file contains the layout and election results data as described below.
-The repo contains election results from 1864 and 1920-2024.
+The repo contains results for all US presidential elections.
 
 ## interaction
 * Left-arrow, Page-Down, Down-Arrow, Left-Mouse: move forward
@@ -37,8 +37,10 @@ The repo contains election results from 1864 and 1920-2024.
 ```
 ## data
 
-Tab-separated lists with fields: state, row, column, winner (r=republican, d=democrat, i=independent), vote count
+Tab-separated lists with fields: state, row, column, winner (r=republican, d=democrat, i=independent, f=Federalist, dr=Democratic-Republican, w=Whig), population.
 The files begin with '# year canidate1 candidate2...
+
+The party affiliation may be appended to the candidate name (for example, "Taylor:w", to indicate the Whig party).
 
 For example:
 
