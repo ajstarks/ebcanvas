@@ -69,7 +69,7 @@ func work(screen *ebiten.Image) {
 	canvas.Wedge(50, 75, 10, 0, 90, dotcolor)
 	canvas.Wedge(50, 75, 10, 180, 270, txcolor)
 
-	for deg = 0; deg < 360; deg += 20 {
+	for deg = 0; deg < 360; deg += 30 {
 		canvas.RText(50, 20, deg, 2.5, fmt.Sprintf("rotated: %.0f°", deg), txcolor)
 	}
 

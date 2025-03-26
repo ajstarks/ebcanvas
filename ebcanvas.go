@@ -5,6 +5,7 @@ import (
 	"image"
 	"image/color"
 	"math"
+	"os"
 	"strconv"
 	"strings"
 
@@ -15,8 +16,8 @@ import (
 )
 
 const (
-	Pi    = 3.14159265358979323846264338327950288419716939937510582097494459
-	twoPi = 2 * Pi
+	Pi  = 3.14159265358979323846264338327950288419716939937510582097494459
+	lsf = 1.2
 )
 
 type Canvas struct {
@@ -36,6 +37,15 @@ func LoadFont() error {
 	}
 	mplusFaceSource = s
 	return nil
+}
+
+func LoadImage(name string) (image.Image, error) {
+	r, err := os.Open(name)
+	if err != nil {
+		return nil, err
+	}
+	im, _, err := image.Decode(r)
+	return im, err
 }
 
 // pct calculates percentage of a value
@@ -125,6 +135,8 @@ func textwrap(screen *ebiten.Image, x, y, w, linespacing, size float64, s string
 	yp := y
 	edge := x + w
 	words := strings.FieldsFunc(s, whitespace)
+
+	// ok to overflow the eddge
 	for _, s := range words {
 		tw := text.Advance(s, ff)
 		btext(screen, xp, yp, size, s, color)
@@ -133,6 +145,27 @@ func textwrap(screen *ebiten.Image, x, y, w, linespacing, size float64, s string
 			xp = x
 			yp += linespacing
 		}
+	}
+}
+
+func textwraps(screen *ebiten.Image, x, y, w, linespacing, size float64, s string, color color.NRGBA) {
+	const factor = 0.3
+	ff := &text.GoTextFace{Source: mplusFaceSource, Size: size}
+	wordspacing := text.Advance("M", ff) * factor
+	xp := x
+	yp := y
+	edge := x + w
+	words := strings.FieldsFunc(s, whitespace)
+
+	//  never go over the edge
+	for _, s := range words {
+		tw := text.Advance(s, ff)
+		if xp+tw > edge {
+			xp = x
+			yp += linespacing
+		}
+		btext(screen, xp, yp, size, s, color)
+		xp += tw + wordspacing
 	}
 }
 
@@ -329,11 +362,6 @@ func (c *Canvas) Circle(cx, cy, r float32, fillcolor color.NRGBA) {
 	circle(c.Screen, cx, cy, r, fillcolor)
 }
 
-// HLine makes a horizonal line beginning at (x,y) extending to the right
-func (c *Canvas) HLine(x1, y1, size, sw float32, strokecolor color.NRGBA) {
-	c.Line(x1, y1, x1+size, y1, sw, strokecolor)
-}
-
 // Line draws a line between (x1,y1) and (x2,y2)
 // using percent-based coordinates and measures
 func (c *Canvas) Line(x1, y1, x2, y2, sw float32, strokecolor color.NRGBA) {
@@ -342,6 +370,16 @@ func (c *Canvas) Line(x1, y1, x2, y2, sw float32, strokecolor color.NRGBA) {
 	x2, y2 = dimen(x2, y2, cw, ch)
 	sw = pct(sw, cw)
 	line(c.Screen, x1, y1, x2, y2, sw, strokecolor)
+}
+
+// HLine makes a horizonal line beginning at (x,y) extending to the right
+func (c *Canvas) HLine(x1, y1, size, sw float32, strokecolor color.NRGBA) {
+	c.Line(x1, y1, x1+size, y1, sw, strokecolor)
+}
+
+// VLines draws a vertical line begging ar (x,y) moving up size
+func (c *Canvas) VLine(x1, y1, size, sw float32, strokecolor color.NRGBA) {
+	c.Line(x1, y1, x1, y1+size, sw, strokecolor)
 }
 
 // Polygon draws a filled polygon using the points in x and y
@@ -431,11 +469,6 @@ func (c *Canvas) Square(x, y, w float32, fillcolor color.NRGBA) {
 	centerRect(c.Screen, x, y, w, h, fillcolor)
 }
 
-// VLines draws a vertical line begging ar (x,y) moving up size
-func (c *Canvas) VLine(x1, y1, size, sw float32, strokecolor color.NRGBA) {
-	c.Line(x1, y1, x1, y1+size, sw, strokecolor)
-}
-
 // Text methods
 
 // Text draws text contained in s, beginning at (x,y), at the specifed size
@@ -456,6 +489,11 @@ func (c *Canvas) CText(x, y, size float32, s string, textcolor color.NRGBA) {
 	ctext(c.Screen, float64(cx), float64(cy), float64(size), s, textcolor)
 }
 
+// TextMid is an alternative name for CText
+func (c *Canvas) TextMid(x, y, size float32, s string, textcolor color.NRGBA) {
+	c.CText(x, y, size, s, textcolor)
+}
+
 // RText draws rotated text at (x,y), rotated at the specified angle
 func (c *Canvas) RText(x, y, angle, size float32, s string, textcolor color.NRGBA) {
 	cw, ch := float32(c.Width), float32(c.Height)
@@ -463,11 +501,6 @@ func (c *Canvas) RText(x, y, angle, size float32, s string, textcolor color.NRGB
 	size = pct(size, cw)
 	theta := degreesToRadians(angle)
 	rtext(c.Screen, float64(cx), float64(cy), float64(theta), float64(size), s, textcolor)
-}
-
-// TextMid is an alternative name for CText
-func (c *Canvas) TextMid(x, y, size float32, s string, textcolor color.NRGBA) {
-	c.CText(x, y, size, s, textcolor)
 }
 
 // EText draws text contained in s with end point at (x,y) at the specified size
@@ -484,14 +517,24 @@ func (c *Canvas) TextEnd(x, y, size float32, s string, textcolor color.NRGBA) {
 	c.EText(x, y, size, s, textcolor)
 }
 
+// TextWrap wraps text starting at (x,y), to x+w, overflow is permitted
 func (c *Canvas) TextWrap(x, y, w, size float32, s string, textcolor color.NRGBA) {
-	const lsf = 1.2
 	cw, ch := float32(c.Width), float32(c.Height)
 	cx, cy := dimen(x, y, cw, ch)
 	size = pct(size, cw)
 	w = pct(w, cw)
 	ls := float64(size * lsf)
 	textwrap(c.Screen, float64(cx), float64(cy), float64(w), ls, float64(size), s, textcolor)
+}
+
+// TextWrap wraps text starting at (x,y), to x+w, never overflowing the edge
+func (c *Canvas) TextWrapStrict(x, y, w, size float32, s string, textcolor color.NRGBA) {
+	cw, ch := float32(c.Width), float32(c.Height)
+	cx, cy := dimen(x, y, cw, ch)
+	size = pct(size, cw)
+	w = pct(w, cw)
+	ls := float64(size * lsf)
+	textwraps(c.Screen, float64(cx), float64(cy), float64(w), ls, float64(size), s, textcolor)
 }
 
 // Utility Methods

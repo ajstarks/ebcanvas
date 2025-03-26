@@ -109,6 +109,7 @@ func play(screen *ebiten.Image) {
 
 	// Text
 	tx := cx1 + (cx2-cx1)/2
+	canvas.CText(colx, 30, labelsize, "Text", labelcolor)
 	canvas.Text(tx, 25, subsize, "Begin-aligned", labelcolor)
 	canvas.Circle(tx, 25, subsize/4, labelcolor)
 	canvas.CText(tx, 20, subsize, "Centered", labelcolor)
@@ -184,15 +185,18 @@ func main() {
 	ebiten.SetWindowSize(screenWidth, screenHeight)
 	ebiten.SetWindowTitle("play")
 
-	if err := loadAssets(); err != nil {
+	var err error
+	earth, err = ebcanvas.LoadImage("earth.jpg")
+	if err != nil {
 		fmt.Fprintf(os.Stderr, "%v\n", err)
 		return
 	}
-	if err := ebcanvas.LoadFont(); err != nil {
+
+	if err = ebcanvas.LoadFont(); err != nil {
 		fmt.Fprintf(os.Stderr, "%v\n", err)
 		return
 	}
-	if err := ebiten.RunGame(&App{}); err != nil {
+	if err = ebiten.RunGame(&App{}); err != nil {
 		fmt.Fprintf(os.Stderr, "%v\n", err)
 		return
 	}

@@ -186,23 +186,17 @@ func main() {
 	ebiten.SetWindowResizingMode(ebiten.WindowResizingModeEnabled)
 	ebiten.SetWindowSize(screenWidth, screenHeight)
 	ebiten.SetWindowTitle("Ebiten Canvas API")
-
-	r, err := os.Open("earth.jpg")
+	var err error
+	earth, err = ebcanvas.LoadImage("earth.jpg")
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "%v\n", err)
 		return
 	}
-	earth, _, err = image.Decode(r)
-	if err != nil {
+	if err = ebcanvas.LoadFont(); err != nil {
 		fmt.Fprintf(os.Stderr, "%v\n", err)
 		return
 	}
-
-	if err := ebcanvas.LoadFont(); err != nil {
-		fmt.Fprintf(os.Stderr, "%v\n", err)
-		return
-	}
-	if err := ebiten.RunGame(&Game{}); err != nil {
+	if err = ebiten.RunGame(&Game{}); err != nil {
 		fmt.Fprintf(os.Stderr, "%v\n", err)
 		return
 	}

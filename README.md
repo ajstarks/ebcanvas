@@ -74,31 +74,39 @@ Makes
 
 Currently for text to work, a font must be loaded with LoadFont() (see below).
 
-Text anchored at (x,y)
+Text anchored at (x,y).
 
 	(c *Canvas) Text(x, y, size float32, s string, textcolor color.NRGBA)
 
-Text centered at (x,y) 
+Text centered at (x,y).
 
 	(c *Canvas) CText(x, y, size float32, s string, textcolor color.NRGBA)
 
-Text whose end is at (x,y) 
+Text with end is at (x,y).
 
 	(c *Canvas) EText(x, y, size float32, s string, textcolor color.NRGBA)
 
+Text rotated at angle (degrees), starting at (x,y).
+
+	(c *Canvas) RText(x, y, angle, size float32, s string, textcolor color.NRGBA)
+
+Text beginning at (x,y), wrapped to x+w.
+
+	(c *Canvas) RText(x, y, angle, size float32, s string, textcolor color.NRGBA)
+
 # Images
 
-CenterImage places an image centered at (x,y) at the specified scale (0-100)
+CenterImage places an image centered at (x,y) at the specified scale (0-100).
 
 	(c *Canvas) Image(x, y float32, scale float32, img image.Image) 
 
-CornerImage places an image with the upper left corner at (x,y) t the specified scale (0-100)
+CornerImage places an image with the upper left corner at (x,y) t the specified scale (0-100).
 
 	(c *Canvas) CornerImage(x, y float32, scale float64, img image.Image)
 
 # Shapes
 
-Arc draws filled or stroked arc centered at (cx,cy) with radius r, between angle a1 and a2 (degrees 0-360)
+Arc draws filled or stroked arc centered at (cx,cy) with radius r, between angle a1 and a2 (degrees 0-360).
 
 	(c *Canvas) Arc(cx, cy, r, a1, a2 float32, fillcolor color.NRGBA)
 	(c *Canvas) StrokedArc(cx, cy, r, a1, a2, size float32, strokecolor color.NRGBA)
@@ -107,11 +115,11 @@ Wedge draws a wedge centered at (x,y) with radius r, between the angles a1 and a
 
 	(c *Canvas) Wedge(x, y, r, a1 float32, fillcolor color.NRGBA)
 
-Rect draws a filled rectangle centered at (x,y) with dimensions (w,h)
+Rect draws a filled rectangle centered at (x,y) with dimensions (w,h).
 
 	(c *Canvas) Rect(x, y, w, h float32, fillcolor color.NRGBA)
 
-Circle draws a filled circle centered at (x,y), with radius r
+Circle draws a filled circle centered at (x,y), with radius r.
 
 	(c *Canvas) Circle(cx, cy, r float32, fillcolor color.NRGBA)
 
@@ -120,20 +128,20 @@ Draw horizontal and vertical lines with stroke width sw, beginning at (x,y), for
 	(c *Canvas) HLine(x1, y1, size, sw float32, strokecolor color.NRGBA)
 	(c *Canvas) VLine(x1, y1, size, sw float32, strokecolor color.NRGBA)
 
-Draw a line with stroke width sw, beginning at (x1,y1) and ending at (x2,y2)
+Draw a line with stroke width sw, beginning at (x1,y1) and ending at (x2,y2).
 
 	(c *Canvas) Line(x1, y1, x2, y2, sw float32, strokecolor color.NRGBA)
 
-Draw a filled polygon using points in x and y
+Draw a filled polygon using points in x and y.
 
 	(c *Canvas) Polygon(x, y []float32, fillcolor color.NRGBA)
 
-Draw filled and stroked quadradic Bezier curves, starting at (x1,y1), ending at (x3,y3), with control point at (x2,y2)
+Draw filled and stroked quadradic Bezier curves, starting at (x1,y1), ending at (x3,y3), with control point at (x2,y2).
 
 	(c *Canvas) Curve(x1, y1, x2, y2, x3, y3 float32, fillcolor color NRGBA) 
 	(c *Canvas) StrokedCurve(x1, y1, x2, y2, x3, y3, size float32, strokecolor color.NRGBA) 
 
-Draw filled and stroked cubic Bezier curves, starting at (x1,y1), ending at (x4,y4), with control points at (x2,y2) and (x3,y3)
+Draw filled and stroked cubic Bezier curves, starting at (x1,y1), ending at (x4,y4), with control points at (x2,y2) and (x3,y3).
 
 	func (c *Canvas) CubeCurve(x1, y1, x2, y2, x3, y3, x4, y4 float32, strokecolor color.NRGBA)
 	func (c *Canvas) StrokedCubeCurve(x1, y1, x2, y2, x3, y3, x4, y4, size float32, strokecolor color.NRGBA)
@@ -148,7 +156,11 @@ LoadFont loads the default font (found in the example/resources directory of the
 
 	LoadFont() err
 
-Fill the canvas with a background color
+Load an image from the file system.
+
+	LoadImage(name string) (image.Image, err)
+
+Fill the canvas with a background color.
 
 	(c *Canvas) Background(fillcolor color.NRGBA)
 
@@ -157,12 +169,12 @@ A gridline is drawn at the specifed interval.
 
 	(c *Canvas) Grid(x, y, w, h, size, interval float32, strokecolor color.NRGBA)
 
-PolarDegrees returns the Cartesian coordinates (x, y) from polar coordinates, with compensation for canvas aspect ratio
+PolarDegrees returns the Cartesian coordinates (x, y) from polar coordinates, with compensation for canvas aspect ratio.
 
 	(c *Canvas) PolarDegrees(cx, cy, r, theta float32) (float32, float32)
 
 Polar returns the Cartesian coordinates (x, y) from polar coordinates
-with compensation for canvas aspect ratio
+with compensation for canvas aspect ratio.
 
 	(c *Canvas) Polar(cx, cy, r, theta float32) (float32, float32)
 
@@ -180,7 +192,7 @@ ColorLookup returns the color using strings in the form of:
 
 ```ColorLookup(s string) color.NRGBA```
 
-MapRange maps a value between low1 and high1, return the corresponding value between low2 and high2
+MapRange maps a value between low1 and high1, return the corresponding value between low2 and high2.
 
 	MapRange(value, low1, high1, low2, high2 float64) float64
 

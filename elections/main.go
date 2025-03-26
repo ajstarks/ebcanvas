@@ -27,13 +27,13 @@ type egrid struct {
 	party      string
 	row        int
 	col        int
-	population int64
+	population int
 }
 
 // One election "frame"
 type election struct {
 	title    string
-	min, max int64
+	min, max int
 	data     []egrid
 }
 
@@ -48,7 +48,14 @@ var (
 	elections                 []election
 	opts                      options
 	screenWidth, screenHeight int
-	partyColors               = map[string]string{"r": "red", "d": "blue", "i": "gray", "w": "peru", "dr": "purple", "f": "green"}
+	partyColors               = map[string]string{
+		"r":  "red",
+		"d":  "blue",
+		"i":  "gray",
+		"w":  "peru",
+		"dr": "purple",
+		"f":  "green",
+	}
 )
 
 func (a *App) Update() error {
@@ -88,10 +95,10 @@ func (a *App) Draw(screen *ebiten.Image) {
 	elect(a, screen)
 }
 
-func million(n int64) string {
-	s := strconv.FormatInt(n, 10)
+func million(n int) string {
+	s := strconv.FormatInt(int64(n), 10)
 	p := len(s)
-	return "Population: " + s[0:p-6] + "," + s[p-6:p-3] + "," + s[p-3:p]
+	return s[0:p-6] + "," + s[p-6:p-3] + "," + s[p-3:p]
 }
 
 // area computes the area of a circle
@@ -108,23 +115,14 @@ func atoi(s string) int {
 	return v
 }
 
-// atoi64 converts a string to an 64-bit integer
-func atoi64(s string) int64 {
-	v, err := strconv.ParseInt(s, 10, 64)
-	if err != nil {
-		return 0
-	}
-	return v
-}
-
 // readData reads election data into the data structure
 func readData(r io.Reader) (election, error) {
 	var d egrid
 	var data []egrid
-	var min, max int64
+	var min, max int
 	title := ""
 	scanner := bufio.NewScanner(r)
-	min, max = math.MaxInt64, -math.MaxInt64
+	min, max = math.MaxInt32, -math.MaxInt32
 	for scanner.Scan() {
 		t := scanner.Text()
 		if len(t) == 0 { // skip blank lines
@@ -143,7 +141,7 @@ func readData(r io.Reader) (election, error) {
 		d.col = atoi(fields[1])
 		d.row = atoi(fields[2])
 		d.party = fields[3]
-		d.population = atoi64(fields[4])
+		d.population = atoi(fields[4])
 		data = append(data, d)
 		// compute min, max
 		if d.population > max {
@@ -166,7 +164,7 @@ func process(canvas *ebcanvas.Canvas, e election) {
 	amin := area(float64(e.min))
 	amax := area(float64(e.max))
 	beginPage(canvas, opts.bgcolor)
-	var pop int64 = 0
+	pop := 0
 	for _, d := range e.data {
 		pop += d.population
 		x := opts.left + (float64(d.row) * opts.colsize)
@@ -193,14 +191,14 @@ func partycand(s, def string) (string, string) {
 }
 
 // showtitle shows the title and subhead
-func showtitle(canvas *ebcanvas.Canvas, s string, pop int64, top float64, textcolor string) {
+func showtitle(canvas *ebcanvas.Canvas, s string, pop int, top float64, textcolor string) {
 	fields := strings.Fields(s) // year, democratic, republican, third-party (optional)
 	if len(fields) < 2 {
 		return
 	}
 	suby := top - 7
 	ctext(canvas, 50, top, 3.6, fields[0]+" US Presidential Election", textcolor)
-	ctext(canvas, 90, 5, 1.5, million(pop), textcolor)
+	ctext(canvas, 85, 5, 1.5, "Population: "+million(pop), textcolor)
 	var party string
 	var cand string
 	if len(fields) > 1 {
