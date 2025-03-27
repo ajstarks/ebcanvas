@@ -97,18 +97,27 @@ func play(screen *ebiten.Image) {
 	// Circle
 	cx1 := colx - 10
 	cx2 := colx + 10
+	tx := cx1 + (cx2-cx1)/2
+
+	// Circle
 	canvas.CText(cx1, 55, labelsize, "Circle", labelcolor)
-	canvas.Circle(cx1, 45, 5, fcolor)
+	canvas.Circle(cx1, 45, 4.5, fcolor)
 	canvas.Coord(cx1, 45, subsize, "center", labelcolor)
 
 	// Arc
 	canvas.CText(cx2, 55, labelsize, "Arc", labelcolor)
-	canvas.Arc(cx2, 45, 5, 0, 180, tcolor)
-	canvas.StrokedArc(cx2, 45, 5, 0, 180, lw, stcolor)
+	canvas.Arc(cx2, 45, 4.5, 0, 180, tcolor)
+	canvas.StrokedArc(cx2, 45, 4.5, 0, 180, lw, stcolor)
 	canvas.Coord(cx2, 45, subsize, "center", labelcolor)
 
+	// Wedge
+	//canvas.CText(cx2, 55, labelsize, "Wedge", labelcolor)
+	//fcolor.A = 255
+	//canvas.Wedge(cx2, 45, 4.5, 180, 270, fcolor)
+	//fcolor.A = 100
+	//canvas.Coord(cx2, 45, subsize, "center", labelcolor)
+
 	// Text
-	tx := cx1 + (cx2-cx1)/2
 	canvas.CText(colx, 30, labelsize, "Text", labelcolor)
 	canvas.Text(tx, 25, subsize, "Begin-aligned", labelcolor)
 	canvas.Circle(tx, 25, subsize/4, labelcolor)
@@ -120,6 +129,7 @@ func play(screen *ebiten.Image) {
 	canvas.Circle(tx, 10, subsize/4, labelcolor)
 	canvas.RText(cx1, 5, 45, subsize, "Rotated", labelcolor)
 	canvas.Circle(cx1, 5, subsize/4, labelcolor)
+
 	// Quadradic Bezier
 	start := Point{X: 45, Y: 65}
 	c1 := Point{X: 70, Y: 85}

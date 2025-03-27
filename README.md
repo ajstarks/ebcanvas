@@ -1,5 +1,5 @@
 # ebcanvas -- a 2D canvas API built on ebitenengine
-![ebcanvas](play.png)
+![ebcanvas](images/play.png)
 
 # Introduction
 
@@ -68,9 +68,11 @@ func main() {
 ```
 
 Makes
-![hello](hello.png)
+![hello](images/hello.png)
 
 # Text
+
+![text](images/Text.png)
 
 Currently for text to work, a font must be loaded with LoadFont() (see below).
 
@@ -96,6 +98,8 @@ Text beginning at (x,y), wrapped to x+w.
 
 # Images
 
+![image](images/Image.png)
+
 CenterImage places an image centered at (x,y) at the specified scale (0-100).
 
 	(c *Canvas) Image(x, y float32, scale float32, img image.Image) 
@@ -108,6 +112,9 @@ CornerImage places an image with the upper left corner at (x,y) t the specified 
 
 Arc draws filled or stroked arc centered at (cx,cy) with radius r, between angle a1 and a2 (degrees 0-360).
 
+![arc](images/Arc.png)
+
+
 	(c *Canvas) Arc(cx, cy, r, a1, a2 float32, fillcolor color.NRGBA)
 	(c *Canvas) StrokedArc(cx, cy, r, a1, a2, size float32, strokecolor color.NRGBA)
 
@@ -117,13 +124,20 @@ Wedge draws a wedge centered at (x,y) with radius r, between the angles a1 and a
 
 Rect draws a filled rectangle centered at (x,y) with dimensions (w,h).
 
+![rect](images/Rect.png)]
+
 	(c *Canvas) Rect(x, y, w, h float32, fillcolor color.NRGBA)
 
 Circle draws a filled circle centered at (x,y), with radius r.
 
+![circle](images/Circle.png)
+
 	(c *Canvas) Circle(cx, cy, r float32, fillcolor color.NRGBA)
 
 Draw horizontal and vertical lines with stroke width sw, beginning at (x,y), for length size. 
+
+![line](images/Line.png)
+
 
 	(c *Canvas) HLine(x1, y1, size, sw float32, strokecolor color.NRGBA)
 	(c *Canvas) VLine(x1, y1, size, sw float32, strokecolor color.NRGBA)
@@ -132,21 +146,31 @@ Draw a line with stroke width sw, beginning at (x1,y1) and ending at (x2,y2).
 
 	(c *Canvas) Line(x1, y1, x2, y2, sw float32, strokecolor color.NRGBA)
 
+
+
 Draw a filled polygon using points in x and y.
+
+![polygon](images/Polygon.png)
 
 	(c *Canvas) Polygon(x, y []float32, fillcolor color.NRGBA)
 
 Draw filled and stroked quadradic Bezier curves, starting at (x1,y1), ending at (x3,y3), with control point at (x2,y2).
+
+![curve](images/QCurve.png)
 
 	(c *Canvas) Curve(x1, y1, x2, y2, x3, y3 float32, fillcolor color NRGBA) 
 	(c *Canvas) StrokedCurve(x1, y1, x2, y2, x3, y3, size float32, strokecolor color.NRGBA) 
 
 Draw filled and stroked cubic Bezier curves, starting at (x1,y1), ending at (x4,y4), with control points at (x2,y2) and (x3,y3).
 
+![curve2](images/CCurve.png)
+
 	func (c *Canvas) CubeCurve(x1, y1, x2, y2, x3, y3, x4, y4 float32, strokecolor color.NRGBA)
 	func (c *Canvas) StrokedCubeCurve(x1, y1, x2, y2, x3, y3, x4, y4, size float32, strokecolor color.NRGBA)
 
 Square draws a square centered at (x,y) at the specified size.
+
+![square](images/Square.png)
 
 	(c *Canvas) Square(x, y, size float32, fillcolor color.NRGBA)
 
