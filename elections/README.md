@@ -28,6 +28,13 @@ The repo contains results for all US presidential elections.
         map left value (canvas %) (default 15)
   -rowsize float
         rowsize (canvas %) (default 9)
+  -shape string
+        shape for states:
+        "c": circle,
+        "h": hexagon,
+        "s": square
+        "l": line
+        "p": plain text (default "c")
   -textcolor string
         text color (default "white")
   -top float

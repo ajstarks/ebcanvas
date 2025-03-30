@@ -41,7 +41,7 @@ type election struct {
 type options struct {
 	width, height               int
 	top, left, rowsize, colsize float64
-	bgcolor, textcolor          string
+	bgcolor, textcolor, shape   string
 }
 
 var (
@@ -57,6 +57,11 @@ var (
 		"f":  "green",
 	}
 )
+
+// maprange maps one range into another
+func maprange(value, low1, high1, low2, high2 float64) float64 {
+	return low2 + (high2-low2)*(value-low1)/(high1-low1)
+}
 
 func (a *App) Update() error {
 	_, wy := ebiten.Wheel()
@@ -159,21 +164,53 @@ func readData(r io.Reader) (election, error) {
 	return e, scanner.Err()
 }
 
-// process walks the data, making the visualization
 func process(canvas *ebcanvas.Canvas, e election) {
-	amin := area(float64(e.min))
-	amax := area(float64(e.max))
 	beginPage(canvas, opts.bgcolor)
-	pop := 0
+	fmin, fmax := float64(e.min), float64(e.max)
+	amin, amax := area(fmin), area(fmax)
+	sumpop := 0
 	for _, d := range e.data {
-		pop += d.population
+		sumpop += d.population
 		x := opts.left + (float64(d.row) * opts.colsize)
 		y := opts.top - (float64(d.col) * opts.rowsize)
-		r := ebcanvas.MapRange(area(float64(d.population)), amin, amax, 2, opts.colsize)
-		circle(canvas, x, y, r, partyColors[d.party])
-		ctext(canvas, x, y-0.5, 1.2, d.name, "white")
+		fpop := float64(d.population)
+		apop := area(fpop)
+
+		// defaults
+		txcolor := "white"
+		txsize := 1.2
+		font := "sans"
+		name := d.name
+
+		switch opts.shape {
+		case "c": // circle
+			r := maprange(apop, amin, amax, 2, opts.colsize)
+			circle(canvas, x, y, r, partyColors[d.party])
+		case "h": // hexagom
+			r := maprange(apop, amin, amax, 2, opts.colsize)
+			hexagon(canvas, x, y, r/2, partyColors[d.party])
+		case "s": // square
+			r := maprange(fpop, fmin, fmax, 2, opts.colsize)
+			square(canvas, x, y, r, partyColors[d.party])
+		case "l": // lines
+			r := maprange(apop, amin, amax, 2, opts.colsize)
+			polylines(canvas, x, y, r/2, 0.25, partyColors[d.party])
+			txcolor = partyColors[d.party]
+		case "p": // plain text
+			txcolor = partyColors[d.party]
+			txsize = maprange(fpop, fmin, fmax, 2, opts.colsize*0.75)
+			//		case "g": // geographic
+			//			txcolor = partyColors[d.party]
+			//			name = statemap[d.name]
+			//			font = "symbol"
+			//			txsize = maprange(fpop, fmin, fmax, 2, opts.colsize)
+		default:
+			r := maprange(apop, amin, amax, 2, opts.colsize)
+			circle(canvas, x, y, r, partyColors[d.party])
+		}
+		ctext(canvas, x, y-0.5, txsize, name, font, txcolor)
 	}
-	showtitle(canvas, e.title, pop, opts.top+15, opts.textcolor)
+	showtitle(canvas, e.title, sumpop, opts.top+15, opts.textcolor)
 	endPage(canvas)
 }
 
@@ -197,8 +234,8 @@ func showtitle(canvas *ebcanvas.Canvas, s string, pop int, top float64, textcolo
 		return
 	}
 	suby := top - 7
-	ctext(canvas, 50, top, 3.6, fields[0]+" US Presidential Election", textcolor)
-	ctext(canvas, 85, 5, 1.5, "Population: "+million(pop), textcolor)
+	ctext(canvas, 50, top, 3.6, fields[0]+" US Presidential Election", "sans", textcolor)
+	ctext(canvas, 85, 5, 1.5, "Population: "+million(pop), "sans", textcolor)
 	var party string
 	var cand string
 	if len(fields) > 1 {
@@ -223,7 +260,7 @@ func circle(canvas *ebcanvas.Canvas, x, y, r float64, color string) {
 }
 
 // ctext makes centered text
-func ctext(canvas *ebcanvas.Canvas, x, y, size float64, s string, color string) {
+func ctext(canvas *ebcanvas.Canvas, x, y, size float64, s string, fontname string, color string) {
 	tx, ty, ts := float32(x), float32(y), float32(size)
 	canvas.CText(tx, ty, ts, s, ebcanvas.ColorLookup(color))
 }
@@ -232,6 +269,41 @@ func ctext(canvas *ebcanvas.Canvas, x, y, size float64, s string, color string) 
 func ltext(canvas *ebcanvas.Canvas, x, y, size float64, s string, color string) {
 	tx, ty, ts := float32(x), float32(y), float32(size)
 	canvas.Text(tx, ty, ts, s, ebcanvas.ColorLookup(color))
+}
+
+// square makes a square centered ar (x,y), width w.
+func square(canvas *ebcanvas.Canvas, x, y, w float64, color string) {
+	canvas.Square(float32(x), float32(y), float32(w), ebcanvas.ColorLookup(color))
+}
+
+// pangles computes the points of a polygon based on a series of angles
+func pangles(cx, cy, r float64, angles []float64) ([]float32, []float32) {
+	px := make([]float32, len(angles))
+	py := make([]float32, len(angles))
+	aspect := float64(screenWidth) / float64(screenHeight)
+	for i, a := range angles {
+		t := a * (math.Pi / 180)
+		px[i] = float32(cx + (r * math.Cos(t)))
+		py[i] = float32(cy + ((r * aspect) * math.Sin(t)))
+	}
+	return px, py
+}
+
+// hexagon makes a filled hexagon centered at (cx, cy), size is the subscribed circle radius r
+func hexagon(canvas *ebcanvas.Canvas, cx, cy, r float64, color string) {
+	px, py := pangles(cx, cy, r, []float64{30, 90, 150, 210, 270, 330})
+	canvas.Polygon(px, py, ebcanvas.ColorLookup(color))
+}
+
+// polylines makes a outlined hexagon, centered at (cx, cy), size is the subscribed circle radius r
+func polylines(canvas *ebcanvas.Canvas, cx, cy, r, lw float64, color string) {
+	px, py := pangles(cx, cy, r, []float64{30, 90, 150, 210, 270, 330})
+	lx := len(px) - 1
+	linewidth := float32(lw)
+	for i := 0; i < lx; i++ {
+		canvas.Line(px[i], py[i], px[i+1], py[i+1], linewidth, ebcanvas.ColorLookup(color))
+	}
+	canvas.Line(px[0], py[0], px[lx], py[lx], linewidth, ebcanvas.ColorLookup(color))
 }
 
 // legend makes the subtitle
@@ -247,7 +319,7 @@ func beginPage(canvas *ebcanvas.Canvas, bgcolor string) {
 
 // endPage ends a page
 func endPage(canvas *ebcanvas.Canvas) {
-	ctext(canvas, 50, 5, 1.5, "The area of a circle denotes state population: source U.S. Census", "gray")
+	ctext(canvas, 50, 5, 1.5, "The area of a circle denotes state population: source U.S. Census", "sans", "gray")
 }
 
 // elect processes election data
@@ -276,6 +348,8 @@ func main() {
 	flag.IntVar(&screenHeight, "height", 900, "canvas height")
 	flag.StringVar(&opts.bgcolor, "bgcolor", "black", "background color")
 	flag.StringVar(&opts.textcolor, "textcolor", "white", "text color")
+	flag.StringVar(&opts.shape, "shape", "c", "shape for states:\n\"c\": circle,\n\"h\": hexagon,\n\"s\": square\n\"l\": line\n\"g\": geographic\n\"p\": plain text")
+
 	flag.Parse()
 
 	// Read in the data
