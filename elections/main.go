@@ -400,6 +400,7 @@ func elect(a *App, screen *ebiten.Image) {
 
 func main() {
 	// parse command line options
+	var textfont string
 	flag.Float64Var(&opts.top, "top", 75, "map top value (canvas %)")
 	flag.Float64Var(&opts.left, "left", 15, "map left value (canvas %)")
 	flag.Float64Var(&opts.rowsize, "rowsize", 9, "rowsize (canvas %)")
@@ -408,6 +409,7 @@ func main() {
 	flag.IntVar(&screenHeight, "height", 900, "canvas height")
 	flag.StringVar(&opts.bgcolor, "bgcolor", "black", "background color")
 	flag.StringVar(&opts.textcolor, "textcolor", "white", "text color")
+	flag.StringVar(&textfont, "textfont", "", "font for text")
 	flag.StringVar(&opts.shape, "shape", "c", "shape for states:\n\"c\": circle,\n\"h\": hexagon,\n\"s\": square\n\"l\": line\n\"g\": geographic\n\"p\": plain text")
 
 	flag.Parse()
@@ -431,17 +433,32 @@ func main() {
 		fmt.Fprintln(os.Stderr, "no data read")
 		os.Exit(1)
 	}
-	if err := ebcanvas.LoadFont(); err != nil {
-		fmt.Fprintf(os.Stderr, "%v\n", err)
-		os.Exit(2)
+
+	// load sans font
+	if len(textfont) > 0 { // specified font
+		sf, err := ebcanvas.LoadFontName(textfont)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "%v\n", err)
+			os.Exit(2)
+		}
+		fontmap["sans"] = sf
+	} else { // default font
+		err := ebcanvas.LoadFont()
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "%v\n", err)
+			os.Exit(3)
+		}
+		fontmap["sans"] = ebcanvas.CurrentFont
 	}
+
+	// load statefont
 	statefont, err := ebcanvas.LoadFontName("stateface.ttf")
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "%v\n", err)
-		os.Exit(3)
+		os.Exit(4)
 	}
-	fontmap["sans"] = ebcanvas.CurrentFont
 	fontmap["symbol"] = statefont
+
 	ebiten.SetWindowSize(screenWidth, screenHeight)
 	ebiten.SetWindowTitle("elections")
 	if err := ebiten.RunGame(&App{}); err != nil {

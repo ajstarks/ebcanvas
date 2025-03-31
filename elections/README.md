@@ -37,6 +37,8 @@ The repo contains results for all US presidential elections.
         "p": plain text (default "c")
   -textcolor string
         text color (default "white")
+  -textfont string
+        font for text
   -top float
         map top value (canvas %) (default 75)
   -width int
