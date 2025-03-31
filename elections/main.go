@@ -60,7 +60,7 @@ var (
 	statefont *text.GoTextFaceSource
 	fontmap   = map[string]*text.GoTextFaceSource{
 		"sans":   ebcanvas.CurrentFont,
-		"symbol": statefont,
+		"symbol": nil,
 	}
 	// character map for the Stateface font
 	statemap = map[string]string{
@@ -435,10 +435,9 @@ func main() {
 		fmt.Fprintf(os.Stderr, "%v\n", err)
 		os.Exit(2)
 	}
-	var ferr error
-	statefont, ferr = ebcanvas.LoadFontName("stateface.ttf")
-	if ferr != nil {
-		fmt.Fprintf(os.Stderr, "%v\n", ferr)
+	statefont, err := ebcanvas.LoadFontName("stateface.ttf")
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "%v\n", err)
 		os.Exit(3)
 	}
 	fontmap["sans"] = ebcanvas.CurrentFont
