@@ -1,0 +1,7 @@
+#!/bin/sh
+./elections nyt-????.d  &
+./elections -shape p -bgcolor linen -textcolor black nyt-????.d  &
+./elections -shape l -bgcolor linen -textcolor black nyt-????.d  &
+./elections -shape g -bgcolor linen -textcolor black nyt-????.d  &
+./elections -shape h nyt-????.d  &
+./elections -shape s nyt-????.d  &

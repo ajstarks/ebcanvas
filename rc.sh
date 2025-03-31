@@ -7,7 +7,7 @@ do
 		./allcharts
 		;;
 		elections)
-		./elections nyt-????.d  &
+		./allelections
 		;;
 		*)
 		./$i &

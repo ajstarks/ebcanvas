@@ -25,9 +25,7 @@ type Canvas struct {
 	Screen        *ebiten.Image
 }
 
-var (
-	mplusFaceSource *text.GoTextFaceSource
-)
+var CurrentFont *text.GoTextFaceSource
 
 // LoadFont loads the default font
 func LoadFont() error {
@@ -35,10 +33,24 @@ func LoadFont() error {
 	if err != nil {
 		return err
 	}
-	mplusFaceSource = s
+	CurrentFont = s
 	return nil
 }
 
+// LoadFontCollection loads a series of fonts
+func LoadFontName(name string) (*text.GoTextFaceSource, error) {
+	r, err := os.Open(name)
+	if err != nil {
+		return nil, err
+	}
+	f, err := text.NewGoTextFaceSource(r)
+	if err != nil {
+		return nil, err
+	}
+	return f, nil
+}
+
+// LoadImage loads an image by name.
 func LoadImage(name string) (image.Image, error) {
 	r, err := os.Open(name)
 	if err != nil {
@@ -84,7 +96,7 @@ func strokedarc(screen *ebiten.Image, cx, cy, r, a1, a2, size float32, strokecol
 
 // btext draws text beginning at (x,y)
 func btext(screen *ebiten.Image, x, y float64, size float64, s string, textcolor color.NRGBA) {
-	ff := &text.GoTextFace{Source: mplusFaceSource, Size: size}
+	ff := &text.GoTextFace{Source: CurrentFont, Size: size}
 	op := &text.DrawOptions{}
 	op.GeoM.Translate(x, y-size)
 	op.ColorScale.ScaleWithColor(textcolor)
@@ -93,7 +105,7 @@ func btext(screen *ebiten.Image, x, y float64, size float64, s string, textcolor
 
 // ctext draws text centered at (x,y)
 func ctext(screen *ebiten.Image, x, y float64, size float64, s string, textcolor color.NRGBA) {
-	ff := &text.GoTextFace{Source: mplusFaceSource, Size: size}
+	ff := &text.GoTextFace{Source: CurrentFont, Size: size}
 	tw := text.Advance(s, ff)
 	op := &text.DrawOptions{}
 	op.GeoM.Translate(x-(tw/2), y-size)
@@ -103,7 +115,7 @@ func ctext(screen *ebiten.Image, x, y float64, size float64, s string, textcolor
 
 // etext draws text with end point at (x,y)
 func etext(screen *ebiten.Image, x, y float64, size float64, s string, textcolor color.NRGBA) {
-	ff := &text.GoTextFace{Source: mplusFaceSource, Size: size}
+	ff := &text.GoTextFace{Source: CurrentFont, Size: size}
 	tw := text.Advance(s, ff)
 	op := &text.DrawOptions{}
 	op.GeoM.Translate(x-tw, y-size)
@@ -113,7 +125,7 @@ func etext(screen *ebiten.Image, x, y float64, size float64, s string, textcolor
 
 // rtext draws rotated text (angle theta (radians)), starting at (x,y)
 func rtext(screen *ebiten.Image, x, y, theta, size float64, s string, textcolor color.NRGBA) {
-	ff := &text.GoTextFace{Source: mplusFaceSource, Size: size}
+	ff := &text.GoTextFace{Source: CurrentFont, Size: size}
 	op := &text.DrawOptions{}
 	op.GeoM.Rotate(theta)
 	op.GeoM.Translate(x, y-size)
@@ -129,7 +141,7 @@ func whitespace(r rune) bool {
 // textwrap wraps text to the specified margin, starting at (x,y)
 func textwrap(screen *ebiten.Image, x, y, w, linespacing, size float64, s string, color color.NRGBA) {
 	const factor = 0.3
-	ff := &text.GoTextFace{Source: mplusFaceSource, Size: size}
+	ff := &text.GoTextFace{Source: CurrentFont, Size: size}
 	wordspacing := text.Advance("M", ff) * factor
 	xp := x
 	yp := y
@@ -150,7 +162,7 @@ func textwrap(screen *ebiten.Image, x, y, w, linespacing, size float64, s string
 
 func textwraps(screen *ebiten.Image, x, y, w, linespacing, size float64, s string, color color.NRGBA) {
 	const factor = 0.3
-	ff := &text.GoTextFace{Source: mplusFaceSource, Size: size}
+	ff := &text.GoTextFace{Source: CurrentFont, Size: size}
 	wordspacing := text.Advance("M", ff) * factor
 	xp := x
 	yp := y

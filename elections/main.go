@@ -14,6 +14,7 @@ import (
 	"github.com/ajstarks/ebcanvas"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
+	"github.com/hajimehoshi/ebiten/v2/text/v2"
 )
 
 type App struct {
@@ -55,6 +56,65 @@ var (
 		"w":  "peru",
 		"dr": "purple",
 		"f":  "green",
+	}
+	statefont *text.GoTextFaceSource
+	fontmap   = map[string]*text.GoTextFaceSource{
+		"sans":   ebcanvas.CurrentFont,
+		"symbol": statefont,
+	}
+	// character map for the Stateface font
+	statemap = map[string]string{
+		"AL": "B",
+		"AK": "A",
+		"AZ": "D",
+		"AR": "C",
+		"CA": "E",
+		"CO": "F",
+		"CT": "G",
+		"DE": "H",
+		"FL": "I",
+		"GA": "J",
+		"HI": "K",
+		"ID": "M",
+		"IL": "N",
+		"IN": "O",
+		"IA": "L",
+		"KS": "P",
+		"KY": "Q",
+		"LA": "R",
+		"ME": "U",
+		"MD": "T",
+		"MA": "S",
+		"MI": "V",
+		"MN": "W",
+		"MS": "Y",
+		"MO": "X",
+		"MT": "Z",
+		"NE": "c",
+		"NV": "g",
+		"NH": "d",
+		"NJ": "e",
+		"NM": "f",
+		"NY": "h",
+		"NC": "a",
+		"ND": "b",
+		"OH": "i",
+		"OK": "j",
+		"OR": "k",
+		"PA": "l",
+		"RI": "m",
+		"SC": "n",
+		"SD": "o",
+		"TN": "p",
+		"TX": "q",
+		"UT": "r",
+		"VT": "t",
+		"VA": "s",
+		"WA": "u",
+		"WV": "w",
+		"WI": "v",
+		"WY": "x",
+		"DC": "y",
 	}
 )
 
@@ -181,7 +241,6 @@ func process(canvas *ebcanvas.Canvas, e election) {
 		txsize := 1.2
 		font := "sans"
 		name := d.name
-
 		switch opts.shape {
 		case "c": // circle
 			r := maprange(apop, amin, amax, 2, opts.colsize)
@@ -199,11 +258,11 @@ func process(canvas *ebcanvas.Canvas, e election) {
 		case "p": // plain text
 			txcolor = partyColors[d.party]
 			txsize = maprange(fpop, fmin, fmax, 2, opts.colsize*0.75)
-			//		case "g": // geographic
-			//			txcolor = partyColors[d.party]
-			//			name = statemap[d.name]
-			//			font = "symbol"
-			//			txsize = maprange(fpop, fmin, fmax, 2, opts.colsize)
+		case "g": // geographic
+			txcolor = partyColors[d.party]
+			name = statemap[d.name]
+			font = "symbol"
+			txsize = maprange(fpop, fmin, fmax, 2, opts.colsize)
 		default:
 			r := maprange(apop, amin, amax, 2, opts.colsize)
 			circle(canvas, x, y, r, partyColors[d.party])
@@ -262,6 +321,7 @@ func circle(canvas *ebcanvas.Canvas, x, y, r float64, color string) {
 // ctext makes centered text
 func ctext(canvas *ebcanvas.Canvas, x, y, size float64, s string, fontname string, color string) {
 	tx, ty, ts := float32(x), float32(y), float32(size)
+	ebcanvas.CurrentFont = fontmap[fontname]
 	canvas.CText(tx, ty, ts, s, ebcanvas.ColorLookup(color))
 }
 
@@ -319,7 +379,7 @@ func beginPage(canvas *ebcanvas.Canvas, bgcolor string) {
 
 // endPage ends a page
 func endPage(canvas *ebcanvas.Canvas) {
-	ctext(canvas, 50, 5, 1.5, "The area of a circle denotes state population: source U.S. Census", "sans", "gray")
+	ctext(canvas, 50, 5, 1.5, "The area denotes state population: source U.S. Census", "sans", "gray")
 }
 
 // elect processes election data
@@ -375,6 +435,14 @@ func main() {
 		fmt.Fprintf(os.Stderr, "%v\n", err)
 		os.Exit(2)
 	}
+	var ferr error
+	statefont, ferr = ebcanvas.LoadFontName("stateface.ttf")
+	if ferr != nil {
+		fmt.Fprintf(os.Stderr, "%v\n", ferr)
+		os.Exit(3)
+	}
+	fontmap["sans"] = ebcanvas.CurrentFont
+	fontmap["symbol"] = statefont
 	ebiten.SetWindowSize(screenWidth, screenHeight)
 	ebiten.SetWindowTitle("elections")
 	if err := ebiten.RunGame(&App{}); err != nil {
