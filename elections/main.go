@@ -46,10 +46,10 @@ type options struct {
 }
 
 var (
-	elections                 []election
-	opts                      options
-	screenWidth, screenHeight int
-	partyColors               = map[string]string{
+	elections                 []election           // series of election results
+	opts                      options              // command line options
+	screenWidth, screenHeight int                  // screen width, height
+	partyColors               = map[string]string{ // party names/colors
 		"r":  "red",
 		"d":  "blue",
 		"i":  "gray",
@@ -57,13 +57,13 @@ var (
 		"dr": "purple",
 		"f":  "green",
 	}
-	statefont *text.GoTextFaceSource
-	fontmap   = map[string]*text.GoTextFaceSource{
+	statefont *text.GoTextFaceSource               // state shape font
+	fontmap   = map[string]*text.GoTextFaceSource{ // canonical names for fonts
 		"sans":   ebcanvas.CurrentFont,
 		"symbol": nil,
 	}
-	// character map for the Stateface font
-	statemap = map[string]string{
+
+	statemap = map[string]string{ // character map for the Stateface fonts
 		"AL": "B",
 		"AK": "A",
 		"AZ": "D",
@@ -127,22 +127,23 @@ func (a *App) Update() error {
 	_, wy := ebiten.Wheel()
 
 	switch {
+	// quit
 	case inpututil.IsKeyJustPressed(ebiten.KeyQ) ||
 		inpututil.IsKeyJustPressed(ebiten.KeyEscape):
 		os.Exit(0)
-
+	// home key -> first result
 	case inpututil.IsKeyJustPressed(ebiten.KeyHome):
 		a.electionNumber = 0
-
+	// end key -> last result
 	case inpututil.IsKeyJustPressed(ebiten.KeyEnd):
 		a.electionNumber = a.ne
-
+	// move backwards
 	case inpututil.IsKeyJustPressed(ebiten.KeyArrowDown) ||
 		inpututil.IsKeyJustPressed(ebiten.KeyArrowLeft) ||
 		inpututil.IsKeyJustPressed(ebiten.KeyPageDown) ||
 		inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonRight) || wy < 0:
 		a.electionNumber--
-
+	// move forwardq
 	case inpututil.IsKeyJustPressed(ebiten.KeyArrowUp) ||
 		inpututil.IsKeyJustPressed(ebiten.KeyArrowRight) ||
 		inpututil.IsKeyJustPressed(ebiten.KeyPageUp) ||
@@ -160,6 +161,7 @@ func (a *App) Draw(screen *ebiten.Image) {
 	elect(a, screen)
 }
 
+// million formats a number with commas
 func million(n int) string {
 	s := strconv.FormatInt(int64(n), 10)
 	p := len(s)
@@ -224,28 +226,27 @@ func readData(r io.Reader) (election, error) {
 	return e, scanner.Err()
 }
 
+// process makes an election result
 func process(canvas *ebcanvas.Canvas, e election) {
 	beginPage(canvas, opts.bgcolor)
 	fmin, fmax := float64(e.min), float64(e.max)
 	amin, amax := area(fmin), area(fmax)
 	sumpop := 0
+	txcolor := "white"
+	txsize := 1.2
+	font := "sans"
 	for _, d := range e.data {
 		sumpop += d.population
 		x := opts.left + (float64(d.row) * opts.colsize)
 		y := opts.top - (float64(d.col) * opts.rowsize)
 		fpop := float64(d.population)
 		apop := area(fpop)
-
-		// defaults
-		txcolor := "white"
-		txsize := 1.2
-		font := "sans"
 		name := d.name
 		switch opts.shape {
 		case "c": // circle
 			r := maprange(apop, amin, amax, 2, opts.colsize)
 			circle(canvas, x, y, r, partyColors[d.party])
-		case "h": // hexagom
+		case "h": // hexagon
 			r := maprange(apop, amin, amax, 2, opts.colsize)
 			hexagon(canvas, x, y, r/2, partyColors[d.party])
 		case "s": // square
@@ -273,6 +274,7 @@ func process(canvas *ebcanvas.Canvas, e election) {
 	endPage(canvas)
 }
 
+// partycan returns the party and candidate
 func partycand(s, def string) (string, string) {
 	var party, cand string
 	f := strings.Split(s, ":")
@@ -434,7 +436,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	// load sans font
+	// load text font
 	if len(textfont) > 0 { // specified font
 		sf, err := ebcanvas.LoadFontName(textfont)
 		if err != nil {
