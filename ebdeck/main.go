@@ -164,7 +164,6 @@ func process(a *App, canvas *ebcanvas.Canvas) {
 				}
 				doimage(canvas, img, i)
 			}
-
 		case "text":
 			for _, t := range slide.Text {
 				if t.Color == "" {
@@ -172,12 +171,21 @@ func process(a *App, canvas *ebcanvas.Canvas) {
 				}
 				dotext(canvas, t)
 			}
+		case "list":
+			for _, li := range slide.List {
+				dolist(canvas, li)
+			}
 		case "ellipse":
 			for _, e := range slide.Ellipse {
 				doellipse(canvas, e)
 			}
 		case "line":
+
 			for _, l := range slide.Line {
+				if l.Color == "" {
+					l.Color = slide.Fg
+				}
+
 				doline(canvas, l)
 			}
 		case "rect":
@@ -202,6 +210,54 @@ func process(a *App, canvas *ebcanvas.Canvas) {
 		gc := ebcanvas.ColorLookup(slide.Fg)
 		gc.A = 100
 		canvas.Grid(0, 0, 100, 100, 0.1, float32(opts.gridpct), gc)
+	}
+}
+
+// bullet draws a bullet
+func bullet(canvas *ebcanvas.Canvas, x, y, size float32, c color.NRGBA) {
+	canvas.Circle(x-size, y+size/2, size/4, c)
+}
+
+func number(canvas *ebcanvas.Canvas, n int, x, y, size float32, c color.NRGBA) {
+	canvas.EText(x-size/2, y, size, fmt.Sprintf("%d.", n+1), c)
+}
+
+func dolist(canvas *ebcanvas.Canvas, list deck.List) {
+	c := ebcanvas.ColorLookup(list.Color)
+	c.A = setopacity(list.Opacity)
+	var xp, yp, ls, ts float32
+	xp = float32(list.Xp)
+	yp = float32(list.Yp)
+	ts = float32(list.Sp)
+	ls = float32(list.Lp)
+	if list.Font == "" {
+		list.Font = "sans"
+	}
+	if ls == 0 {
+		ls = linespacing
+	}
+	ebcanvas.CurrentFont = fontmap[list.Font]
+	var t string
+	for i, item := range list.Li {
+		t = item.ListText
+		if item.Font != "" {
+			ebcanvas.CurrentFont = fontmap[item.Font]
+		}
+		if item.Color != "" {
+			c = ebcanvas.ColorLookup(item.Color)
+		}
+		if list.Type == "number" {
+			number(canvas, i, xp, yp, ts, c)
+		}
+		if list.Type == "bullet" {
+			bullet(canvas, xp, yp, ts, c)
+		}
+		if list.Align == "center" {
+			canvas.CText(xp, yp, ts, t, c)
+		} else {
+			canvas.Text(xp, yp, ts, t, c)
+		}
+		yp -= ls * ts * 2
 	}
 }
 

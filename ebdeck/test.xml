@@ -953,6 +953,29 @@
 </slide>
 
 <slide>
+    <list type="number" xp="10" yp="90" sp="4">
+        <li>One</li>
+        <li>Two</li>
+        <li>Three</li>
+    </list>
+    <list align="center" xp="60" yp="90" sp="4">
+        <li>One</li>
+        <li>Two is bigger</li>
+        <li>Third item is larger</li>
+    </list>
+    <list type="bullet" xp="10" yp="40" sp="4">
+        <li>One</li>
+        <li>Two</li>
+        <li>Third item is larger</li>
+    </list>
+    <list xp="60" yp="40" sp="4">
+        <li>One</li>
+        <li>Two</li>
+        <li>Third item is larger</li>
+    </list>
+</slide>
+
+<slide>
     <polygon xc="50 70 30" yc="70 40 40" color="red" />
     <rect xp="50" yp="80" wp="30" hp="10" color="green" />
     <rect xp="50" yp="20" wp="20" hr="100" color="blue" />
