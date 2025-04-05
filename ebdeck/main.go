@@ -1,4 +1,4 @@
-// elections: show election results on a state grid
+// ebdeck: show deck markup
 package main
 
 import (
@@ -49,7 +49,7 @@ type PageDimen struct {
 const (
 	mm2pt        = 2.83464 // mm to pt conversion
 	linespacing  = 1.4
-	listspacing  = 1.8
+	listspacing  = 1.5
 	fontfactor   = 1.0
 	listwrap     = 95.0
 	defaultColor = "rgb(128,128,128)"
@@ -110,13 +110,13 @@ func (a *App) Update() error {
 	case inpututil.IsKeyJustPressed(ebiten.KeyArrowDown) ||
 		inpututil.IsKeyJustPressed(ebiten.KeyArrowLeft) ||
 		inpututil.IsKeyJustPressed(ebiten.KeyPageDown) ||
-		inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonRight) || wy < 0:
+		inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonRight) || wy > 0:
 		a.slideNumber--
 	// move forwardq
 	case inpututil.IsKeyJustPressed(ebiten.KeyArrowUp) ||
 		inpututil.IsKeyJustPressed(ebiten.KeyArrowRight) ||
 		inpututil.IsKeyJustPressed(ebiten.KeyPageUp) ||
-		inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) || wy > 0:
+		inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) || wy < 0:
 		a.slideNumber++
 	}
 	return nil
@@ -262,14 +262,15 @@ func list(canvas *ebcanvas.Canvas, list deck.List) {
 
 // dimage processes deck images
 func dimage(canvas *ebcanvas.Canvas, img image.Image, i deck.Image) {
-	sc := 100.0
+	var sc float32
+	sc = 100.0
 	if i.Scale > 0 {
-		sc = i.Scale
+		sc = float32(i.Scale)
 	}
 	if i.Height == 0 {
-		sc = float64(i.Width)
+		sc = float32(i.Width)
 	}
-	canvas.CenterImage(float32(i.Xp), float32(i.Yp), float32(sc), img)
+	canvas.CenterImage(float32(i.Xp), float32(i.Yp), sc, img)
 }
 
 // arc makes arcs
@@ -379,18 +380,22 @@ func dtext(canvas *ebcanvas.Canvas, t deck.Text) {
 	c.A = setopacity(t.Opacity)
 	ebcanvas.CurrentFont = fontmap[t.Font]
 
+	s := t.Tdata
 	if t.Type == "block" {
-		canvas.TextWrap(x, y, float32(t.Wp), ts, t.Tdata, c)
+		canvas.TextWrap(x, y, float32(t.Wp), ts, s, c)
 		return
 	}
-
+	if t.Rotation > 0 {
+		canvas.RText(x, y, float32(t.Rotation), ts, s, c)
+		return
+	}
 	switch t.Align {
 	case "c", "middle", "mid", "center":
-		canvas.CText(x, y, ts, t.Tdata, c)
+		canvas.CText(x, y, ts, s, c)
 	case "e", "right", "end":
-		canvas.EText(x, y, ts, t.Tdata, c)
+		canvas.EText(x, y, ts, s, c)
 	default:
-		canvas.Text(x, y, ts, t.Tdata, c)
+		canvas.Text(x, y, ts, s, c)
 	}
 }
 
