@@ -49,7 +49,7 @@ type PageDimen struct {
 const (
 	mm2pt        = 2.83464 // mm to pt conversion
 	linespacing  = 1.4
-	listspacing  = 2.0
+	listspacing  = 1.8
 	fontfactor   = 1.0
 	listwrap     = 95.0
 	defaultColor = "rgb(128,128,128)"
@@ -139,7 +139,7 @@ func setopacity(v float64) uint8 {
 	return o
 }
 
-// process makes an election result
+// process slides
 func process(a *App, canvas *ebcanvas.Canvas) {
 	var bg color.NRGBA
 	slide := a.d.Slide[a.slideNumber]
@@ -152,60 +152,57 @@ func process(a *App, canvas *ebcanvas.Canvas) {
 		slide.Fg = "black"
 	}
 	canvas.Background(bg)
+
+	// process each element according to the layer list
 	layerlist := strings.Split(opts.layers, ":")
-	// process each element
 	for il := range layerlist {
-		switch layerlist[il] {
+		switch layerlist[il] { // for each element type loop through each set
 		case "image":
 			for _, i := range slide.Image {
 				img, ok := imagecache[i.Name]
 				if !ok {
 					continue
 				}
-				doimage(canvas, img, i)
+				dimage(canvas, img, i)
 			}
 		case "text":
 			for _, t := range slide.Text {
 				if t.Color == "" {
 					t.Color = slide.Fg
 				}
-				dotext(canvas, t)
+				dtext(canvas, t)
 			}
 		case "list":
 			for _, li := range slide.List {
-				dolist(canvas, li)
+				list(canvas, li)
 			}
 		case "ellipse":
 			for _, e := range slide.Ellipse {
-				doellipse(canvas, e)
+				ellipse(canvas, e)
 			}
 		case "line":
-
 			for _, l := range slide.Line {
-				if l.Color == "" {
-					l.Color = slide.Fg
-				}
-
-				doline(canvas, l)
+				line(canvas, l)
 			}
 		case "rect":
 			for _, r := range slide.Rect {
-				dorect(canvas, r)
+				rect(canvas, r)
 			}
 		case "poly":
 			for _, p := range slide.Polygon {
-				dopoly(canvas, p)
+				poly(canvas, p)
 			}
 		case "arc":
 			for _, a := range slide.Arc {
-				doarc(canvas, a)
+				arc(canvas, a)
 			}
 		case "curve":
 			for _, c := range slide.Curve {
-				docurve(canvas, c)
+				curve(canvas, c)
 			}
 		}
 	}
+	// add a grid, if specified
 	if opts.gridpct > 0 {
 		gc := ebcanvas.ColorLookup(slide.Fg)
 		gc.A = 100
@@ -213,16 +210,18 @@ func process(a *App, canvas *ebcanvas.Canvas) {
 	}
 }
 
-// bullet draws a bullet
+// bullet draws a bullet for a list item.
 func bullet(canvas *ebcanvas.Canvas, x, y, size float32, c color.NRGBA) {
 	canvas.Circle(x-size, y+size/2, size/4, c)
 }
 
+// number adds a number for a list item.
 func number(canvas *ebcanvas.Canvas, n int, x, y, size float32, c color.NRGBA) {
 	canvas.EText(x-size/2, y, size, fmt.Sprintf("%d.", n+1), c)
 }
 
-func dolist(canvas *ebcanvas.Canvas, list deck.List) {
+// dolist processes lists
+func list(canvas *ebcanvas.Canvas, list deck.List) {
 	c := ebcanvas.ColorLookup(list.Color)
 	c.A = setopacity(list.Opacity)
 	var xp, yp, ls, ts float32
@@ -257,11 +256,12 @@ func dolist(canvas *ebcanvas.Canvas, list deck.List) {
 		} else {
 			canvas.Text(xp, yp, ts, t, c)
 		}
-		yp -= ls * ts * 2
+		yp -= ls * ts * listspacing
 	}
 }
 
-func doimage(canvas *ebcanvas.Canvas, img image.Image, i deck.Image) {
+// dimage processes deck images
+func dimage(canvas *ebcanvas.Canvas, img image.Image, i deck.Image) {
 	sc := 100.0
 	if i.Scale > 0 {
 		sc = i.Scale
@@ -272,7 +272,8 @@ func doimage(canvas *ebcanvas.Canvas, img image.Image, i deck.Image) {
 	canvas.CenterImage(float32(i.Xp), float32(i.Yp), float32(sc), img)
 }
 
-func doarc(canvas *ebcanvas.Canvas, a deck.Arc) {
+// arc makes arcs
+func arc(canvas *ebcanvas.Canvas, a deck.Arc) {
 	if a.Color == "" {
 		a.Color = defaultColor
 	}
@@ -282,7 +283,8 @@ func doarc(canvas *ebcanvas.Canvas, a deck.Arc) {
 	canvas.Arc(cx, cy, r, a1, a2, c)
 }
 
-func docurve(canvas *ebcanvas.Canvas, c deck.Curve) {
+// curve makea a quad bezier curve
+func curve(canvas *ebcanvas.Canvas, c deck.Curve) {
 	if c.Color == "" {
 		c.Color = defaultColor
 	}
@@ -295,7 +297,8 @@ func docurve(canvas *ebcanvas.Canvas, c deck.Curve) {
 	canvas.StrokedCurve(x1, y1, x2, y2, x3, y3, sw, clr)
 }
 
-func dorect(canvas *ebcanvas.Canvas, r deck.Rect) {
+// rect makes rectangles and squares
+func rect(canvas *ebcanvas.Canvas, r deck.Rect) {
 	if r.Color == "" {
 		r.Color = defaultColor
 	}
@@ -309,7 +312,8 @@ func dorect(canvas *ebcanvas.Canvas, r deck.Rect) {
 	}
 }
 
-func dopoly(canvas *ebcanvas.Canvas, p deck.Polygon) {
+// poly makes a filled polygon
+func poly(canvas *ebcanvas.Canvas, p deck.Polygon) {
 	xs := strings.Split(p.XC, " ")
 	ys := strings.Split(p.YC, " ")
 	if len(xs) != len(ys) {
@@ -342,7 +346,8 @@ func dopoly(canvas *ebcanvas.Canvas, p deck.Polygon) {
 	canvas.Polygon(xp, yp, c)
 }
 
-func doellipse(canvas *ebcanvas.Canvas, e deck.Ellipse) {
+// ellipse makes circles (for now)
+func ellipse(canvas *ebcanvas.Canvas, e deck.Ellipse) {
 	if e.Hr != 100 {
 		return
 	}
@@ -354,7 +359,8 @@ func doellipse(canvas *ebcanvas.Canvas, e deck.Ellipse) {
 	canvas.Circle(float32(e.Xp), float32(e.Yp), float32(e.Wp/2), c)
 }
 
-func doline(canvas *ebcanvas.Canvas, l deck.Line) {
+// line makes lines
+func line(canvas *ebcanvas.Canvas, l deck.Line) {
 	if l.Color == "" {
 		l.Color = defaultColor
 	}
@@ -363,7 +369,8 @@ func doline(canvas *ebcanvas.Canvas, l deck.Line) {
 	canvas.Line(float32(l.Xp1), float32(l.Yp1), float32(l.Xp2), float32(l.Yp2), float32(l.Sp), c)
 }
 
-func dotext(canvas *ebcanvas.Canvas, t deck.Text) {
+// dtext processes text
+func dtext(canvas *ebcanvas.Canvas, t deck.Text) {
 	if t.Font == "" {
 		t.Font = "sans"
 	}
@@ -387,7 +394,7 @@ func dotext(canvas *ebcanvas.Canvas, t deck.Text) {
 	}
 }
 
-// elect processes election data
+// ebdeck processes deck data
 func ebdeck(a *App, screen *ebiten.Image) {
 	canvas := new(ebcanvas.Canvas)
 	canvas.Screen = screen
@@ -404,7 +411,7 @@ func ebdeck(a *App, screen *ebiten.Image) {
 	process(a, canvas)
 }
 
-// imageinfo returns an image dimensions
+// imageinfo returns an image from a named file
 func imageInfo(s string) image.Image {
 	f, err := os.Open(s)
 	defer f.Close()
@@ -454,6 +461,7 @@ func pagerange(s string) (int, int) {
 	return b, e
 }
 
+// coord makes coordinates
 func coord(canvas *ebcanvas.Canvas, x, y float64) {
 	s := fmt.Sprintf("(%.0f, %.0f)", x, y)
 	canvas.CText(float32(x), float32(y-1.5), 1.5, s, color.NRGBA{0, 0, 0, 255})
@@ -474,6 +482,7 @@ func setfontdir(s string) string {
 	return path.Join(os.Getenv("HOME"), "deckfonts")
 }
 
+// loadDeckFont gets fonts from the font directory
 func loadDeckFont(dname, name string) {
 	f, err := ebcanvas.LoadFontName(path.Join(opts.fontdir, name) + ".ttf")
 	if err != nil {
@@ -483,11 +492,12 @@ func loadDeckFont(dname, name string) {
 	fontmap[dname] = f
 }
 
+// dodeck reads a deck, caching all images,
 func (a *App) dodeck(r io.ReadCloser, begin, end int, pw, ph float64) {
 	d, err := deck.ReadDeck(r, 0, 0)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "%v\n", err)
-		os.Exit(5)
+		os.Exit(2)
 	}
 	// cache all images
 	ns := len(d.Slide)
@@ -519,8 +529,6 @@ func main() {
 	flag.Float64Var(&opts.gridpct, "grid", 0, "grid size (0 for no grid)")
 	flag.Parse()
 
-	var err error
-
 	loadDeckFont("sans", opts.sansfont)
 	loadDeckFont("serif", opts.serifont)
 	loadDeckFont("mono", opts.monofont)
@@ -536,7 +544,9 @@ func main() {
 		ph = p.height * p.unit
 	}
 
+	// read decks from a named file or stdin
 	var r io.ReadCloser
+	var err error
 	files := flag.Args()
 	if len(files) < 1 {
 		r = os.Stdin
@@ -544,10 +554,9 @@ func main() {
 		r, err = os.Open(files[0])
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "%v\n", err)
-			os.Exit(2)
+			os.Exit(1)
 		}
 	}
-
 	ebcanvas.CurrentFont = fontmap["sans"]
 	a := new(App)
 	a.dodeck(r, begin, end, pw, ph)

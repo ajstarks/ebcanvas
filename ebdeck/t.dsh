@@ -38,5 +38,6 @@ deck
 		textblock "This is text wrapped at a specified width (15% of the canvas width)" 20 10 15 1.5
 		line 10 70 25 65 lw "red"
 		line 20 70 35 75 lw "blue"
+		image "earth.jpg" 90 20 20 0
 	eslide
 edeck
