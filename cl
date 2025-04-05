@@ -2,6 +2,7 @@ api
 arc
 compchart
 confetti
+ebdeck
 echart
 eclipse
 elections

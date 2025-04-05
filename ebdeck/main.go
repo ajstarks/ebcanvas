@@ -23,6 +23,7 @@ import (
 type App struct {
 	slideNumber int
 	nslides     int
+	deckname    string
 	d           deck.Deck
 }
 
@@ -48,16 +49,16 @@ type PageDimen struct {
 
 const (
 	mm2pt        = 2.83464 // mm to pt conversion
-	linespacing  = 1.4
+	linespacing  = 1.8
 	listspacing  = 1.5
-	fontfactor   = 1.0
 	listwrap     = 95.0
 	defaultColor = "rgb(128,128,128)"
 )
 
 var (
-	opts                      options // command line options
-	screenWidth, screenHeight int     // screen width, height
+	codemap                   = strings.NewReplacer("\t", "    ") // convert tyabs to spaces
+	opts                      options                             // command line options
+	screenWidth, screenHeight int                                 // screen width, height
 
 	imagecache = map[string]image.Image{}
 
@@ -112,7 +113,7 @@ func (a *App) Update() error {
 		inpututil.IsKeyJustPressed(ebiten.KeyPageDown) ||
 		inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonRight) || wy > 0:
 		a.slideNumber--
-	// move forwardq
+	// move forward
 	case inpututil.IsKeyJustPressed(ebiten.KeyArrowUp) ||
 		inpututil.IsKeyJustPressed(ebiten.KeyArrowRight) ||
 		inpututil.IsKeyJustPressed(ebiten.KeyPageUp) ||
@@ -123,26 +124,13 @@ func (a *App) Update() error {
 }
 
 // setopacity sets the alpha value:
-// 0 == default value (opaque)
-// -1 == fully transparent
-// > 0 set opacity percent
-func setopacity(v float64) uint8 {
-	var o uint8
-	switch {
-	case v < 0:
-		o = 0
-	case v > 0:
-		o = uint8(255.0 * (v / 100))
-	case v == 0:
-		o = 255
-	}
-	return o
-}
 
 // process slides
 func process(a *App, canvas *ebcanvas.Canvas) {
-	var bg color.NRGBA
+	ebiten.SetWindowTitle(fmt.Sprintf("%s: page %d of %d", a.deckname, a.slideNumber+1, a.nslides))
 	slide := a.d.Slide[a.slideNumber]
+
+	var bg color.NRGBA
 	if slide.Bg == "" {
 		bg = color.NRGBA{255, 255, 255, 255}
 	} else {
@@ -210,17 +198,7 @@ func process(a *App, canvas *ebcanvas.Canvas) {
 	}
 }
 
-// bullet draws a bullet for a list item.
-func bullet(canvas *ebcanvas.Canvas, x, y, size float32, c color.NRGBA) {
-	canvas.Circle(x-size, y+size/2, size/4, c)
-}
-
-// number adds a number for a list item.
-func number(canvas *ebcanvas.Canvas, n int, x, y, size float32, c color.NRGBA) {
-	canvas.EText(x-size/2, y, size, fmt.Sprintf("%d.", n+1), c)
-}
-
-// dolist processes lists
+// list processes lists
 func list(canvas *ebcanvas.Canvas, list deck.List) {
 	c := ebcanvas.ColorLookup(list.Color)
 	c.A = setopacity(list.Opacity)
@@ -233,7 +211,7 @@ func list(canvas *ebcanvas.Canvas, list deck.List) {
 		list.Font = "sans"
 	}
 	if ls == 0 {
-		ls = linespacing
+		ls = listspacing
 	}
 	ebcanvas.CurrentFont = fontmap[list.Font]
 	var t string
@@ -260,19 +238,6 @@ func list(canvas *ebcanvas.Canvas, list deck.List) {
 	}
 }
 
-// dimage processes deck images
-func dimage(canvas *ebcanvas.Canvas, img image.Image, i deck.Image) {
-	var sc float32
-	sc = 100.0
-	if i.Scale > 0 {
-		sc = float32(i.Scale)
-	}
-	if i.Height == 0 {
-		sc = float32(i.Width)
-	}
-	canvas.CenterImage(float32(i.Xp), float32(i.Yp), sc, img)
-}
-
 // arc makes arcs
 func arc(canvas *ebcanvas.Canvas, a deck.Arc) {
 	if a.Color == "" {
@@ -285,17 +250,17 @@ func arc(canvas *ebcanvas.Canvas, a deck.Arc) {
 }
 
 // curve makea a quad bezier curve
-func curve(canvas *ebcanvas.Canvas, c deck.Curve) {
-	if c.Color == "" {
-		c.Color = defaultColor
+func curve(canvas *ebcanvas.Canvas, curve deck.Curve) {
+	if curve.Color == "" {
+		curve.Color = defaultColor
 	}
-	clr := ebcanvas.ColorLookup(c.Color)
-	clr.A = setopacity(c.Opacity)
-	x1, y1 := float32(c.Xp1), float32(c.Yp1)
-	x2, y2 := float32(c.Xp2), float32(c.Yp2)
-	x3, y3 := float32(c.Xp3), float32(c.Yp3)
-	sw := float32(c.Sp)
-	canvas.StrokedCurve(x1, y1, x2, y2, x3, y3, sw, clr)
+	c := ebcanvas.ColorLookup(curve.Color)
+	c.A = setopacity(curve.Opacity)
+	x1, y1 := float32(curve.Xp1), float32(curve.Yp1)
+	x2, y2 := float32(curve.Xp2), float32(curve.Yp2)
+	x3, y3 := float32(curve.Xp3), float32(curve.Yp3)
+	sw := float32(curve.Sp)
+	canvas.StrokedCurve(x1, y1, x2, y2, x3, y3, sw, c)
 }
 
 // rect makes rectangles and squares
@@ -385,6 +350,16 @@ func dtext(canvas *ebcanvas.Canvas, t deck.Text) {
 		canvas.TextWrap(x, y, float32(t.Wp), ts, s, c)
 		return
 	}
+	if len(t.File) > 0 {
+		tl := strings.Split(includefile(t.File), "\n")
+		if t.Type == "code" {
+			ebcanvas.CurrentFont = fontmap["mono"]
+			ch := float64(len(tl)) * linespacing * float64(ts)
+			canvas.CornerRect(x-ts, y+(ts*2), float32(t.Wp), float32(ch), color.NRGBA{240, 240, 240, 255})
+		}
+		textlines(canvas, x, y, ts, tl, c)
+		return
+	}
 	if t.Rotation > 0 {
 		canvas.RText(x, y, float32(t.Rotation), ts, s, c)
 		return
@@ -397,6 +372,64 @@ func dtext(canvas *ebcanvas.Canvas, t deck.Text) {
 	default:
 		canvas.Text(x, y, ts, s, c)
 	}
+}
+
+// dimage processes deck images
+func dimage(canvas *ebcanvas.Canvas, img image.Image, i deck.Image) {
+	var sc float32
+	sc = 100.0
+	if i.Scale > 0 {
+		sc = float32(i.Scale)
+	}
+	if i.Height == 0 {
+		sc = float32(i.Width)
+	}
+	canvas.CenterImage(float32(i.Xp), float32(i.Yp), sc, img)
+}
+
+// 0 == default value (opaque)
+// -1 == fully transparent
+// > 0 set opacity percent
+func setopacity(v float64) uint8 {
+	var o uint8
+	switch {
+	case v < 0:
+		o = 0
+	case v > 0:
+		o = uint8(255.0 * (v / 100))
+	case v == 0:
+		o = 255
+	}
+	return o
+}
+
+// bullet draws a bullet for a list item.
+func bullet(canvas *ebcanvas.Canvas, x, y, size float32, c color.NRGBA) {
+	canvas.Circle(x-size, y+size/2, size/4, c)
+}
+
+// number adds a number for a list item.
+func number(canvas *ebcanvas.Canvas, n int, x, y, size float32, c color.NRGBA) {
+	canvas.EText(x-size/2, y, size, fmt.Sprintf("%d.", n+1), c)
+}
+
+// textlines shows a series of lines of text
+func textlines(canvas *ebcanvas.Canvas, x, y, size float32, s []string, c color.NRGBA) {
+	yp := y
+	for _, t := range s {
+		canvas.Text(x, yp, size, t, c)
+		yp -= linespacing * size
+	}
+}
+
+// includefile reads the content of a file into a string
+func includefile(path string) string {
+	data, err := os.ReadFile(path)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "%v\n", err)
+		return ""
+	}
+	return codemap.Replace(string(data))
 }
 
 // ebdeck processes deck data
@@ -552,22 +585,25 @@ func main() {
 	// read decks from a named file or stdin
 	var r io.ReadCloser
 	var err error
+
+	a := new(App)
 	files := flag.Args()
 	if len(files) < 1 {
 		r = os.Stdin
+		a.deckname = "Standard-Input"
 	} else {
-		r, err = os.Open(files[0])
+		a.deckname = files[0]
+		r, err = os.Open(a.deckname)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "%v\n", err)
 			os.Exit(1)
 		}
 	}
 	ebcanvas.CurrentFont = fontmap["sans"]
-	a := new(App)
+
 	a.dodeck(r, begin, end, pw, ph)
 	screenWidth, screenHeight = int(pw), int(ph)
 	ebiten.SetWindowSize(screenWidth, screenHeight)
-	ebiten.SetWindowTitle("ebdeck")
 	if err := ebiten.RunGame(a); err != nil {
 		fmt.Fprintf(os.Stderr, "%v\n", err)
 		os.Exit(3)
