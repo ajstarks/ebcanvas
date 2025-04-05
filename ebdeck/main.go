@@ -199,7 +199,9 @@ func process(a *App, canvas *ebcanvas.Canvas) {
 		}
 	}
 	if opts.gridpct > 0 {
-		canvas.Grid(0, 0, 100, 100, 0.1, float32(opts.gridpct), ebcanvas.ColorLookup(defaultColor))
+		gc := ebcanvas.ColorLookup(slide.Fg)
+		gc.A = 100
+		canvas.Grid(0, 0, 100, 100, 0.1, float32(opts.gridpct), gc)
 	}
 }
 

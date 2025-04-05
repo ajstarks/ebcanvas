@@ -1,0 +1,59 @@
+<deck>
+<slide>
+<ellipse xp="10" yp="45" wp="0.6" hr="100"/>
+<text align="c" xp="10" yp="43.5" sp="1.5" font="mono" color="black" opacity="50">(10,45)</text>
+<ellipse xp="30" yp="45" wp="0.6" hr="100"/>
+<text align="c" xp="30" yp="43.5" sp="1.5" font="mono" color="black" opacity="50">(30,45)</text>
+<ellipse xp="45" yp="65" wp="0.6" hr="100"/>
+<text align="c" xp="45" yp="63.5" sp="1.5" font="mono" color="black" opacity="50">(45,65)</text>
+<ellipse xp="70" yp="85" wp="0.6" hr="100"/>
+<text align="c" xp="70" yp="83.5" sp="1.5" font="mono" color="black" opacity="50">(70,85)</text>
+<ellipse xp="70" yp="65" wp="0.6" hr="100"/>
+<text align="c" xp="70" yp="63.5" sp="1.5" font="mono" color="black" opacity="50">(70,65)</text>
+<ellipse xp="45" yp="25" wp="0.6" hr="100"/>
+<text align="c" xp="45" yp="23.5" sp="1.5" font="mono" color="black" opacity="50">(45,25)</text>
+<ellipse xp="60" yp="20" wp="0.6" hr="100"/>
+<text align="c" xp="60" yp="18.5" sp="1.5" font="mono" color="black" opacity="50">(60,20)</text>
+<ellipse xp="70" yp="25" wp="0.6" hr="100"/>
+<text align="c" xp="70" yp="23.5" sp="1.5" font="mono" color="black" opacity="50">(70,25)</text>
+<ellipse xp="70" yp="5" wp="0.6" hr="100"/>
+<text align="c" xp="70" yp="3.5" sp="1.5" font="mono" color="black" opacity="50">(70,5)</text>
+<ellipse xp="60" yp="10" wp="0.6" hr="100"/>
+<text align="c" xp="60" yp="8.5" sp="1.5" font="mono" color="black" opacity="50">(60,10)</text>
+<ellipse xp="45" yp="5" wp="0.6" hr="100"/>
+<text align="c" xp="45" yp="3.5" sp="1.5" font="mono" color="black" opacity="50">(45,5)</text>
+<ellipse xp="10" yp="70" wp="0.6" hr="100"/>
+<text align="c" xp="10" yp="68.5" sp="1.5" font="mono" color="black" opacity="50">(10,70)</text>
+<ellipse xp="25" yp="65" wp="0.6" hr="100"/>
+<text align="c" xp="25" yp="63.5" sp="1.5" font="mono" color="black" opacity="50">(25,65)</text>
+<ellipse xp="20" yp="70" wp="0.6" hr="100"/>
+<text align="c" xp="20" yp="68.5" sp="1.5" font="mono" color="black" opacity="50">(20,70)</text>
+<ellipse xp="35" yp="75" wp="0.6" hr="100"/>
+<text align="c" xp="35" yp="73.5" sp="1.5" font="mono" color="black" opacity="50">(35,75)</text>
+<ellipse xp="90" yp="45" wp="0.6" hr="100"/>
+<text align="c" xp="90" yp="43.5" sp="1.5" font="mono" color="black" opacity="50">(90,45)</text>
+<ellipse xp="90" yp="70" wp="0.6" hr="100"/>
+<text align="c" xp="90" yp="68.5" sp="1.5" font="mono" color="black" opacity="50">(90,70)</text>
+<ellipse xp="20" yp="25" wp="0.6" hr="100"/>
+<text align="c" xp="20" yp="23.5" sp="1.5" font="mono" color="black" opacity="50">(20,25)</text>
+<ellipse xp="20" yp="20" wp="0.6" hr="100"/>
+<text align="c" xp="20" yp="18.5" sp="1.5" font="mono" color="black" opacity="50">(20,20)</text>
+<ellipse xp="20" yp="15" wp="0.6" hr="100"/>
+<text align="c" xp="20" yp="13.5" sp="1.5" font="mono" color="black" opacity="50">(20,15)</text>
+<ellipse xp="20" yp="10" wp="0.6" hr="100"/>
+<text align="c" xp="20" yp="8.5" sp="1.5" font="mono" color="black" opacity="50">(20,10)</text>
+<text align="c" xp="50" yp="92" sp="5" >ebcanvas deck client</text>
+<ellipse xp="10" yp="45" wp="10" hr="100" color="blue" opacity="30"/>
+<arc xp="30" yp="45" wp="10" hp="10" a1="0" a2="180" sp="0.2" color="red" opacity="30"/>
+<curve xp1="45" yp1="65" xp2="70" yp2="85" xp3="70" yp3="65" sp="0.2" color="red" opacity="30"/>
+<polygon xc="45 60 70 70 60 45" yc="25 20 25 5 10 5" color="red" opacity="30"/>
+<rect xp="90" yp="70" wp="5" hp="10" color="blue" opacity="30"/>
+<rect xp="90" yp="45" wp="10" hr="100" color="red" opacity="30"/>
+<text xp="20" yp="25" sp="1.5" >Begin</text>
+<text align="c" xp="20" yp="20" sp="1.5" >Center</text>
+<text align="e" xp="20" yp="15" sp="1.5" >End</text>
+<text type="block" xp="20" yp="10" wp="15" sp="1.5" >This is text wrapped at a specified width (15% of the canvas width)</text>
+<line xp1="10" yp1="70" xp2="25" yp2="65" sp="0.2" color="red"/>
+<line xp1="20" yp1="70" xp2="35" yp2="75" sp="0.2" color="blue"/>
+</slide>
+</deck>

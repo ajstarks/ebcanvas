@@ -1,0 +1,7 @@
+def coord X Y Dotsize
+	ts=dotsize*2.5
+	ly=Y-ts
+	circle X Y Dotsize
+	l=format "(%0.f,%0.f)" X Y
+	ctext l X ly ts "mono" "black" 50
+edef
