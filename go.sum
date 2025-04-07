@@ -1,3 +1,5 @@
+github.com/ajstarks/deck v0.0.0-20250118150323-ef6ed1252085 h1:CPtKs5AD25Dq0rV8VPya0C6vdYw8p8TMoXhe2LJ2rCU=
+github.com/ajstarks/deck v0.0.0-20250118150323-ef6ed1252085/go.mod h1:eaefDPeBeu5glaTdBvtQnuu0N/V4UKsIEcXXEfNgC+w=
 github.com/ebitengine/gomobile v0.0.0-20240911145611-4856209ac325 h1:Gk1XUEttOk0/hb6Tq3WkmutWa0ZLhNn/6fc6XZpM7tM=
 github.com/ebitengine/gomobile v0.0.0-20240911145611-4856209ac325/go.mod h1:ulhSQcbPioQrallSuIzF8l1NKQoD7xmMZc5NxzibUMY=
 github.com/ebitengine/gomobile v0.0.0-20250209143333-6071a2a2351c h1:nCxkoQoJMcVLc5aoMp3ULbfyEMcQjxopBKgNQVBQFXE=

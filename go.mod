@@ -5,6 +5,7 @@ go 1.24.1
 require github.com/hajimehoshi/ebiten/v2 v2.9.0-alpha.4
 
 require (
+	github.com/ajstarks/deck v0.0.0-20250118150323-ef6ed1252085 // indirect
 	github.com/ebitengine/gomobile v0.0.0-20250209143333-6071a2a2351c // indirect
 	github.com/ebitengine/hideconsole v1.0.0 // indirect
 	github.com/ebitengine/purego v0.9.0-alpha.2 // indirect

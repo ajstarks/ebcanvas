@@ -1,43 +1,73 @@
 deck
-	import "coord.dsh"
 	slide
-		op=30
-		dotsize=0.6
-		lw=0.2
-		coord 10 45 dotsize
-		coord 30 45 dotsize
-		coord 45 65 dotsize
-		coord 70 85 dotsize
-		coord 70 65 dotsize
-		coord 45 25 dotsize
-		coord 60 20 dotsize
-		coord 70 25 dotsize
-		coord 70 5  dotsize
-		coord 60 10 dotsize
-		coord 45 5  dotsize
-		coord 10 70 dotsize
-		coord 25 65 dotsize
-		coord 20 70 dotsize
-		coord 35 75 dotsize
-		coord 90 45 dotsize
-		coord 90 70 dotsize
-		coord 20 25 dotsize
-		coord 20 20 dotsize
-		coord 20 15 dotsize
-		coord 20 10 dotsize
-		ctext "ebcanvas deck client" 50 92 5
-		circle 10 45 10 "blue" op
-		arc 30 45 10 10 0 180 lw "red" op
-		curve 45 65 70 85 70 65 lw "red" op
-		polygon "45 60 70 70 60 45" "25 20 25 5 10 5" "red" op
-		rect 90 70 5 10 "blue" op
-		square 90 45 10 "red" op
-		text "Begin" 20 25 1.5 
-		ctext "Center" 20 20 1.5
-		etext "End" 20 15 1.5
-		textblock "This is text wrapped at a specified width (15% of the canvas width)" 20 10 15 1.5
-		line 10 70 25 65 lw "red"
-		line 20 70 35 75 lw "blue"
-		image "earth.jpg" 90 20 20 0
+		poem="For, lo, the winter is past the rain is over and gone. The flowers appear on the earth, the time for the singing of birds is come."
+
+
+		include "include.dsh"
+
+		square 25 90 10 "green"
+		rect 50 90 30 10 "red"
+		circle 75 90 10 "blue"
+
+		textfile "qb.txt" 75 70 2
+		textcode "hw" 35 75 25 1
+		
+
+		hline 80 50 10 1 "red"
+		vline 80 40 10 1 "blue"
+		line  80 40 90 30 1 "orange"
+		vline 90 30 20 1 "green"
+
+		cimage "cloudy.jpg"  "Clouds"  35 30 640 480 25
+		image  "follow.jpg"            65 30 640 480 25
+
+		bottom=5
+		ctext "hello" 50 bottom 5 
+		text  "hello" 20 bottom 5 "sans" "red"
+		etext "hello" 80 bottom 5 "sans" "blue"
+		textblock poem 30 55 40 2
+
+
+		circle 50  bottom 3 "maroon" 20
+		circle 20  bottom 3 "maroon" 20
+		circle 80  bottom 3 "maroon" 20
+
+		bx=10
+		by=90
+		bs=2
+		vline 10 0 100 0.1 "red" 50
+		list bx by bs
+			li "one"
+			li "two"
+			li "three"
+			li "four"
+		elist
+
+		by -=20
+		blist bx by bs
+			li "one"
+			li "two"
+			li "three"
+			li "four"
+		elist
+
+		by -=20
+		nlist bx by bs
+			li "one"
+			li "two"
+			li "three"
+			li "four"
+		elist
+
+		by -=20
+		clist bx by bs
+			li "one"
+			li "two"
+			li "three"
+			li "four"
+		elist
+
+		curve 30 20 30 50 70 20 0.3 "red"
+		
 	eslide
 edeck
