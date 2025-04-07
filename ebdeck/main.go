@@ -123,11 +123,9 @@ func (a *App) Update() error {
 	return nil
 }
 
-// setopacity sets the alpha value:
-
 // process slides
 func process(a *App, canvas *ebcanvas.Canvas) {
-	ebiten.SetWindowTitle(fmt.Sprintf("%s: page %d of %d", a.deckname, a.slideNumber+1, a.nslides))
+	ebiten.SetWindowTitle(fmt.Sprintf("%s: page %d of %d", a.deckname, a.slideNumber+1, a.nslides+1))
 	slide := a.d.Slide[a.slideNumber]
 
 	var bg color.NRGBA
@@ -245,8 +243,7 @@ func arc(canvas *ebcanvas.Canvas, a deck.Arc) {
 	}
 	c := ebcanvas.ColorLookup(a.Color)
 	c.A = setopacity(a.Opacity)
-	cx, cy, r, a1, a2 := float32(a.Xp), float32(a.Yp), float32(a.Wp/2), float32(a.A1), float32(a.A2)
-	canvas.Arc(cx, cy, r, a1, a2, c)
+	canvas.Arc(float32(a.Xp), float32(a.Yp), float32(a.Wp/2), float32(a.A1), float32(a.A2), c)
 }
 
 // curve makea a quad bezier curve
@@ -387,6 +384,7 @@ func dimage(canvas *ebcanvas.Canvas, img image.Image, i deck.Image) {
 	canvas.CenterImage(float32(i.Xp), float32(i.Yp), sc, img)
 }
 
+// setopacity sets the alpha value:
 // 0 == default value (opaque)
 // -1 == fully transparent
 // > 0 set opacity percent
@@ -524,8 +522,8 @@ func setfontdir(s string) string {
 func loadDeckFont(dname, name string) {
 	f, err := ebcanvas.LoadFontName(path.Join(opts.fontdir, name) + ".ttf")
 	if err != nil {
-		fontmap[dname] = ebcanvas.CurrentFont
-		fmt.Fprintf(os.Stderr, "%v (default font used for %s)\n", err, dname)
+		fmt.Fprintf(os.Stderr, "%v\n", err)
+		os.Exit(2)
 	}
 	fontmap[dname] = f
 }
@@ -547,7 +545,10 @@ func (a *App) dodeck(r io.ReadCloser, begin, end int, pw, ph float64) {
 			if img == nil {
 				continue
 			}
-			imagecache[iname] = img
+			_, ok := imagecache[iname]
+			if !ok {
+				imagecache[iname] = img
+			}
 		}
 	}
 	a.d = d
