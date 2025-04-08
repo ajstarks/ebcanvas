@@ -101,10 +101,13 @@ func (a *App) Update() error {
 	case inpututil.IsKeyJustPressed(ebiten.KeyQ) ||
 		inpututil.IsKeyJustPressed(ebiten.KeyEscape):
 		os.Exit(0)
-	// home key -> first result
+	// refresh
+	case inpututil.IsKeyJustPressed(ebiten.KeyR):
+		a.dodeck(0, a.nslides, 0, 0)
+	// home key -> first slide
 	case inpututil.IsKeyJustPressed(ebiten.KeyHome):
 		a.slideNumber = 0
-	// end key -> last result
+	// end key -> last slide
 	case inpututil.IsKeyJustPressed(ebiten.KeyEnd):
 		a.slideNumber = a.nslides
 	// move backwards
@@ -529,7 +532,12 @@ func loadDeckFont(dname, name string) {
 }
 
 // dodeck reads a deck, caching all images,
-func (a *App) dodeck(r io.ReadCloser, begin, end int, pw, ph float64) {
+func (a *App) dodeck(begin, end int, pw, ph float64) {
+	r, err := a.updateDeck()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "%v\n", err)
+		os.Exit(2)
+	}
 	d, err := deck.ReadDeck(r, 0, 0)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "%v\n", err)
@@ -553,6 +561,18 @@ func (a *App) dodeck(r io.ReadCloser, begin, end int, pw, ph float64) {
 	}
 	a.d = d
 	r.Close()
+}
+
+func (a *App) updateDeck() (io.ReadCloser, error) {
+	var err error
+	var r io.ReadCloser
+	if a.deckname == "" {
+		r = os.Stdin
+		a.deckname = "Standard-Input"
+	} else {
+		r, err = os.Open(a.deckname)
+	}
+	return r, err
 }
 
 func main() {
@@ -582,27 +602,19 @@ func main() {
 		pw = p.width * p.unit
 		ph = p.height * p.unit
 	}
+	ebcanvas.CurrentFont = fontmap["sans"]
 
 	// read decks from a named file or stdin
-	var r io.ReadCloser
-	var err error
 
 	a := new(App)
 	files := flag.Args()
 	if len(files) < 1 {
-		r = os.Stdin
-		a.deckname = "Standard-Input"
+		a.deckname = ""
 	} else {
 		a.deckname = files[0]
-		r, err = os.Open(a.deckname)
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "%v\n", err)
-			os.Exit(1)
-		}
 	}
-	ebcanvas.CurrentFont = fontmap["sans"]
 
-	a.dodeck(r, begin, end, pw, ph)
+	a.dodeck(begin, end, pw, ph)
 	screenWidth, screenHeight = int(pw), int(ph)
 	ebiten.SetWindowSize(screenWidth, screenHeight)
 	if err := ebiten.RunGame(a); err != nil {
