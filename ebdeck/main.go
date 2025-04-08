@@ -11,6 +11,7 @@ import (
 	"path"
 	"strconv"
 	"strings"
+	"time"
 	"unicode"
 
 	"github.com/ajstarks/deck"
@@ -56,6 +57,7 @@ const (
 )
 
 var (
+	btime                     time.Time
 	codemap                   = strings.NewReplacer("\t", "    ") // convert tyabs to spaces
 	opts                      options                             // command line options
 	screenWidth, screenHeight int                                 // screen width, height
@@ -94,13 +96,25 @@ func (a *App) Draw(screen *ebiten.Image) {
 }
 
 func (a *App) Update() error {
-	_, wy := ebiten.Wheel()
 
+	// if the deckfile has changed, reload
+	t, err := modtime(a.deckname)
+	if err == nil && t.After(btime) {
+		a.dodeck(0, a.nslides, 0, 0)
+	}
+
+	// mouse wheel position
+	_, wy := ebiten.Wheel()
 	switch {
 	// quit
 	case inpututil.IsKeyJustPressed(ebiten.KeyQ) ||
 		inpututil.IsKeyJustPressed(ebiten.KeyEscape):
 		os.Exit(0)
+	// grid
+	case inpututil.IsKeyJustPressed(ebiten.KeyBracketLeft):
+		opts.gridpct = 5
+	case inpututil.IsKeyJustPressed(ebiten.KeyBracketRight):
+		opts.gridpct = 0
 	// refresh
 	case inpututil.IsKeyJustPressed(ebiten.KeyR):
 		a.dodeck(0, a.nslides, 0, 0)
@@ -124,6 +138,15 @@ func (a *App) Update() error {
 		a.slideNumber++
 	}
 	return nil
+}
+
+// modtime returns the modification time of a file
+func modtime(filename string) (time.Time, error) {
+	if filename == "" {
+		return time.Time{}, nil
+	}
+	s, err := os.Stat(filename)
+	return s.ModTime(), err
 }
 
 // process slides
@@ -531,6 +554,18 @@ func loadDeckFont(dname, name string) {
 	fontmap[dname] = f
 }
 
+func (a *App) updateDeck() (io.ReadCloser, error) {
+	var err error
+	var r io.ReadCloser
+	if a.deckname == "" {
+		r = os.Stdin
+		a.deckname = "Standard-Input"
+	} else {
+		r, err = os.Open(a.deckname)
+	}
+	return r, err
+}
+
 // dodeck reads a deck, caching all images,
 func (a *App) dodeck(begin, end int, pw, ph float64) {
 	r, err := a.updateDeck()
@@ -545,6 +580,8 @@ func (a *App) dodeck(begin, end int, pw, ph float64) {
 	}
 	// cache all images
 	ns := len(d.Slide)
+	a.nslides = ns
+	a.d = d
 	for i := range ns {
 		slide := d.Slide[i]
 		for j := range slide.Image {
@@ -559,20 +596,8 @@ func (a *App) dodeck(begin, end int, pw, ph float64) {
 			}
 		}
 	}
-	a.d = d
-	r.Close()
-}
 
-func (a *App) updateDeck() (io.ReadCloser, error) {
-	var err error
-	var r io.ReadCloser
-	if a.deckname == "" {
-		r = os.Stdin
-		a.deckname = "Standard-Input"
-	} else {
-		r, err = os.Open(a.deckname)
-	}
-	return r, err
+	r.Close()
 }
 
 func main() {
@@ -605,7 +630,6 @@ func main() {
 	ebcanvas.CurrentFont = fontmap["sans"]
 
 	// read decks from a named file or stdin
-
 	a := new(App)
 	files := flag.Args()
 	if len(files) < 1 {
@@ -613,9 +637,15 @@ func main() {
 	} else {
 		a.deckname = files[0]
 	}
+	var err error
+	btime, err = modtime(a.deckname)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "%v\n", err)
+		os.Exit(2)
+	}
 
-	a.dodeck(begin, end, pw, ph)
 	screenWidth, screenHeight = int(pw), int(ph)
+	a.dodeck(begin, end, pw, ph)
 	ebiten.SetWindowSize(screenWidth, screenHeight)
 	if err := ebiten.RunGame(a); err != nil {
 		fmt.Fprintf(os.Stderr, "%v\n", err)

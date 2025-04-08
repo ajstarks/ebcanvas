@@ -1,0 +1,96 @@
+deck
+    slide
+        ctext "First" 50 80 10
+        ctext "Serif" 20 50 5 "serif" "red"
+        ctext "Sans"  50 50 5 "sans" "green"
+        ctext "Mono"  80 50 5 "mono" "blue"
+        line 5 30 15 30 0.5 "red"
+        circle 20 30 5 "green"
+        arc 30 30 10 10 0 180 0.6
+        for cy=0 20 5
+            curve  75 40 80 cy 90 40 0.2 "blue"
+        efor
+        polygon "50 50 60" "40 20 30" "black"
+        etext "Slide 1" 95 5 2
+    eslide
+
+    slide "hsv(42,100,100)"
+        ctext "Slide 2" 50 50 12
+    eslide
+
+    slide "hsv(35,100,100)"
+        ctext "Slide 3" 50 50 14
+    eslide
+
+    slide "hsv(28,100,100)"
+        ctext "Slide 4" 50 50 16
+    eslide
+
+    slide "hsv(21,100,100)"
+        ctext "Slide 5" 50 50 18
+    eslide
+
+     slide "hsv(14,100,100)"
+        ctext "Slide 6" 50 50 20
+    eslide
+
+    slide "hsv(7,100,100)"
+        ctext "Slide 7" 50 50 22
+    eslide
+
+    // randgen -n 20 -min=0 -max=100 -xint 1 -dec 0 > data.d
+    slide
+        dchart -val=f -xlabel=2 -bar -datacond=0,50,orange data.d
+        etext "Slide 8" 95 5 2
+    eslide
+
+    slide
+        for x=5 95 5
+            circle x 50 4 "maroon" x
+        efor
+
+        for y=5 95 5
+            circle 50 y 4 "darkblue" y
+        efor
+        etext "Slide 9" 95 5 2
+    eslide
+
+    slide
+        dchart -textsize=5 -val=f -top 50 -pwidth=10 -pmap mf.d
+        etext "Slide 10" 95 5 2
+    eslide
+
+    slide "black" "white"
+        image "earth.jpg" 50 50 25 0
+        line 50 80 50 70 0.1 "white"
+        ctext "you are here" 50 82 4
+        etext "Slide 11" 95 5 2
+    eslide
+
+    slide
+        nlist 10 90 4
+            li "One"
+            li "Two"
+            li "Three"
+        elist
+
+        clist 60 90 4
+            li "One"
+            li "Two is bigger"
+            li "Third item is larger"
+        elist
+
+        blist 10 40 4
+            li "One"
+            li "Two"
+            li "Third item is larger"
+        elist
+
+        list 60 40 4
+            li "One"
+            li "Two"
+            li "Third item is larger"
+        elist
+        etext "Slide 12" 95 5 2
+    eslide
+edeck

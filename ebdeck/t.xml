@@ -19,7 +19,7 @@
 <ellipse xp="50" yp="5" wp="3" hr="100" color="maroon" opacity="20"/>
 <ellipse xp="20" yp="5" wp="3" hr="100" color="maroon" opacity="20"/>
 <ellipse xp="80" yp="5" wp="3" hr="100" color="maroon" opacity="20"/>
-<line xp1="10" yp1="0" xp2="10" yp2="100" sp="0.2" color="red" opacity="50"/>
+<line xp1="10" yp1="0" xp2="10" yp2="100" sp="0.2" color="blue" opacity="50"/>
 <list xp="10" yp="90" sp="2" >
 <li>one</li>
 <li>two</li>

@@ -3,6 +3,7 @@
 ![ebdeck](ebdeck.png)
 
 ebdeck reads deck markup from a named file or standard input and renders it.
+If the file changes, ebdeck will refresh the display.
 
 ```ebdeck f.xml # read from a deck file```
 
@@ -18,6 +19,8 @@ ebdeck reads deck markup from a named file or standard input and renders it.
 * End: show last slide
 * Down Arrow, Left Arrow, Page Down: previous slide
 * Up Arrow, Right Arrow, Page Up: next slide
+* [ : grid on
+* ] : grid off
 
 # command line options
 ```

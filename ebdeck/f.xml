@@ -1,0 +1,112 @@
+<deck>
+<slide>
+<text align="c" xp="50" yp="80" sp="10" >First</text>
+<text align="c" xp="20" yp="50" sp="5" font="serif" color="red">Serif</text>
+<text align="c" xp="50" yp="50" sp="5" font="sans" color="green">Sans</text>
+<text align="c" xp="80" yp="50" sp="5" font="mono" color="blue">Mono</text>
+<line xp1="5" yp1="30" xp2="15" yp2="30" sp="0.5" color="red"/>
+<ellipse xp="20" yp="30" wp="5" hr="100" color="green"/>
+<arc xp="30" yp="30" wp="10" hp="10" a1="0" a2="180" sp="0.6"/>
+<curve xp1="75" yp1="40" xp2="80" yp2="0" xp3="90" yp3="40" sp="0.2" color="blue"/>
+<curve xp1="75" yp1="40" xp2="80" yp2="5" xp3="90" yp3="40" sp="0.2" color="blue"/>
+<curve xp1="75" yp1="40" xp2="80" yp2="10" xp3="90" yp3="40" sp="0.2" color="blue"/>
+<curve xp1="75" yp1="40" xp2="80" yp2="15" xp3="90" yp3="40" sp="0.2" color="blue"/>
+<curve xp1="75" yp1="40" xp2="80" yp2="20" xp3="90" yp3="40" sp="0.2" color="blue"/>
+<polygon xc="50 50 60" yc="40 20 30" color="black"/>
+<text align="e" xp="95" yp="5" sp="2" >Slide 1</text>
+</slide>
+<slide bg="hsv(42,100,100)">
+<text align="c" xp="50" yp="50" sp="12" >Slide 2</text>
+</slide>
+<slide bg="hsv(35,100,100)">
+<text align="c" xp="50" yp="50" sp="14" >Slide 3</text>
+</slide>
+<slide bg="hsv(28,100,100)">
+<text align="c" xp="50" yp="50" sp="16" >Slide 4</text>
+</slide>
+<slide bg="hsv(21,100,100)">
+<text align="c" xp="50" yp="50" sp="18" >Slide 5</text>
+</slide>
+<slide bg="hsv(14,100,100)">
+<text align="c" xp="50" yp="50" sp="20" >Slide 6</text>
+</slide>
+<slide bg="hsv(7,100,100)">
+<text align="c" xp="50" yp="50" sp="22" >Slide 7</text>
+</slide>
+<slide>
+<line xp1="10.00" yp1="30.00" xp2="10.00" yp2="36.84" sp="3.21" opacity="100.00" color="orange"/><text xp="10.00" yp="27.00" sp="1.20" align="center" wp="0.00" font="sans" opacity="100.00" color="rgb(75,75,75)" type="">0</text><line xp1="14.21" yp1="30.00" xp2="14.21" yp2="60.53" sp="3.21" opacity="100.00" color="lightsteelblue"/><line xp1="18.42" yp1="30.00" xp2="18.42" yp2="57.89" sp="3.21" opacity="100.00" color="lightsteelblue"/><text xp="18.42" yp="27.00" sp="1.20" align="center" wp="0.00" font="sans" opacity="100.00" color="rgb(75,75,75)" type="">2</text><line xp1="22.63" yp1="30.00" xp2="22.63" yp2="61.05" sp="3.21" opacity="100.00" color="lightsteelblue"/><line xp1="26.84" yp1="30.00" xp2="26.84" yp2="72.11" sp="3.21" opacity="100.00" color="lightsteelblue"/><text xp="26.84" yp="27.00" sp="1.20" align="center" wp="0.00" font="sans" opacity="100.00" color="rgb(75,75,75)" type="">4</text><line xp1="31.05" yp1="30.00" xp2="31.05" yp2="57.37" sp="3.21" opacity="100.00" color="lightsteelblue"/><line xp1="35.26" yp1="30.00" xp2="35.26" yp2="40.53" sp="3.21" opacity="100.00" color="orange"/><text xp="35.26" yp="27.00" sp="1.20" align="center" wp="0.00" font="sans" opacity="100.00" color="rgb(75,75,75)" type="">6</text><line xp1="39.47" yp1="30.00" xp2="39.47" yp2="80.00" sp="3.21" opacity="100.00" color="lightsteelblue"/><line xp1="43.68" yp1="30.00" xp2="43.68" yp2="46.32" sp="3.21" opacity="100.00" color="orange"/><text xp="43.68" yp="27.00" sp="1.20" align="center" wp="0.00" font="sans" opacity="100.00" color="rgb(75,75,75)" type="">8</text><line xp1="47.89" yp1="30.00" xp2="47.89" yp2="73.68" sp="3.21" opacity="100.00" color="lightsteelblue"/><line xp1="52.11" yp1="30.00" xp2="52.11" yp2="73.68" sp="3.21" opacity="100.00" color="lightsteelblue"/><text xp="52.11" yp="27.00" sp="1.20" align="center" wp="0.00" font="sans" opacity="100.00" color="rgb(75,75,75)" type="">10</text><line xp1="56.32" yp1="30.00" xp2="56.32" yp2="38.42" sp="3.21" opacity="100.00" color="orange"/><line xp1="60.53" yp1="30.00" xp2="60.53" yp2="63.68" sp="3.21" opacity="100.00" color="lightsteelblue"/><text xp="60.53" yp="27.00" sp="1.20" align="center" wp="0.00" font="sans" opacity="100.00" color="rgb(75,75,75)" type="">12</text><line xp1="64.74" yp1="30.00" xp2="64.74" yp2="66.32" sp="3.21" opacity="100.00" color="lightsteelblue"/><line xp1="68.95" yp1="30.00" xp2="68.95" yp2="72.63" sp="3.21" opacity="100.00" color="lightsteelblue"/><text xp="68.95" yp="27.00" sp="1.20" align="center" wp="0.00" font="sans" opacity="100.00" color="rgb(75,75,75)" type="">14</text><line xp1="73.16" yp1="30.00" xp2="73.16" yp2="67.37" sp="3.21" opacity="100.00" color="lightsteelblue"/><line xp1="77.37" yp1="30.00" xp2="77.37" yp2="45.26" sp="3.21" opacity="100.00" color="orange"/><text xp="77.37" yp="27.00" sp="1.20" align="center" wp="0.00" font="sans" opacity="100.00" color="rgb(75,75,75)" type="">16</text><line xp1="81.58" yp1="30.00" xp2="81.58" yp2="57.37" sp="3.21" opacity="100.00" color="lightsteelblue"/><line xp1="85.79" yp1="30.00" xp2="85.79" yp2="55.79" sp="3.21" opacity="100.00" color="orange"/><text xp="85.79" yp="27.00" sp="1.20" align="center" wp="0.00" font="sans" opacity="100.00" color="rgb(75,75,75)" type="">18</text><line xp1="90.00" yp1="30.00" xp2="90.00" yp2="56.32" sp="3.21" opacity="100.00" color="orange"/><text align="e" xp="95" yp="5" sp="2" >Slide 8</text>
+</slide>
+<slide>
+<ellipse xp="5" yp="50" wp="4" hr="100" color="maroon" opacity="5"/>
+<ellipse xp="10" yp="50" wp="4" hr="100" color="maroon" opacity="10"/>
+<ellipse xp="15" yp="50" wp="4" hr="100" color="maroon" opacity="15"/>
+<ellipse xp="20" yp="50" wp="4" hr="100" color="maroon" opacity="20"/>
+<ellipse xp="25" yp="50" wp="4" hr="100" color="maroon" opacity="25"/>
+<ellipse xp="30" yp="50" wp="4" hr="100" color="maroon" opacity="30"/>
+<ellipse xp="35" yp="50" wp="4" hr="100" color="maroon" opacity="35"/>
+<ellipse xp="40" yp="50" wp="4" hr="100" color="maroon" opacity="40"/>
+<ellipse xp="45" yp="50" wp="4" hr="100" color="maroon" opacity="45"/>
+<ellipse xp="50" yp="50" wp="4" hr="100" color="maroon" opacity="50"/>
+<ellipse xp="55" yp="50" wp="4" hr="100" color="maroon" opacity="55"/>
+<ellipse xp="60" yp="50" wp="4" hr="100" color="maroon" opacity="60"/>
+<ellipse xp="65" yp="50" wp="4" hr="100" color="maroon" opacity="65"/>
+<ellipse xp="70" yp="50" wp="4" hr="100" color="maroon" opacity="70"/>
+<ellipse xp="75" yp="50" wp="4" hr="100" color="maroon" opacity="75"/>
+<ellipse xp="80" yp="50" wp="4" hr="100" color="maroon" opacity="80"/>
+<ellipse xp="85" yp="50" wp="4" hr="100" color="maroon" opacity="85"/>
+<ellipse xp="90" yp="50" wp="4" hr="100" color="maroon" opacity="90"/>
+<ellipse xp="95" yp="50" wp="4" hr="100" color="maroon" opacity="95"/>
+<ellipse xp="50" yp="5" wp="4" hr="100" color="darkblue" opacity="5"/>
+<ellipse xp="50" yp="10" wp="4" hr="100" color="darkblue" opacity="10"/>
+<ellipse xp="50" yp="15" wp="4" hr="100" color="darkblue" opacity="15"/>
+<ellipse xp="50" yp="20" wp="4" hr="100" color="darkblue" opacity="20"/>
+<ellipse xp="50" yp="25" wp="4" hr="100" color="darkblue" opacity="25"/>
+<ellipse xp="50" yp="30" wp="4" hr="100" color="darkblue" opacity="30"/>
+<ellipse xp="50" yp="35" wp="4" hr="100" color="darkblue" opacity="35"/>
+<ellipse xp="50" yp="40" wp="4" hr="100" color="darkblue" opacity="40"/>
+<ellipse xp="50" yp="45" wp="4" hr="100" color="darkblue" opacity="45"/>
+<ellipse xp="50" yp="50" wp="4" hr="100" color="darkblue" opacity="50"/>
+<ellipse xp="50" yp="55" wp="4" hr="100" color="darkblue" opacity="55"/>
+<ellipse xp="50" yp="60" wp="4" hr="100" color="darkblue" opacity="60"/>
+<ellipse xp="50" yp="65" wp="4" hr="100" color="darkblue" opacity="65"/>
+<ellipse xp="50" yp="70" wp="4" hr="100" color="darkblue" opacity="70"/>
+<ellipse xp="50" yp="75" wp="4" hr="100" color="darkblue" opacity="75"/>
+<ellipse xp="50" yp="80" wp="4" hr="100" color="darkblue" opacity="80"/>
+<ellipse xp="50" yp="85" wp="4" hr="100" color="darkblue" opacity="85"/>
+<ellipse xp="50" yp="90" wp="4" hr="100" color="darkblue" opacity="90"/>
+<ellipse xp="50" yp="95" wp="4" hr="100" color="darkblue" opacity="95"/>
+<text align="e" xp="95" yp="5" sp="2" >Slide 9</text>
+</slide>
+<slide>
+<line xp1="20.00" yp1="50.00" xp2="52.94" yp2="50.00" sp="10.00" opacity="40.00" color="blue"/><text xp="36.47" yp="60.00" sp="3.75" align="center" wp="0.00" font="sans" opacity="100.00" color="rgb(75,75,75)" type="">Males</text><text xp="36.47" yp="47.50" sp="5.00" align="center" wp="0.00" font="sans" opacity="100.00" color="black" type="">47.1%</text><line xp1="52.84" yp1="50.00" xp2="89.90" yp2="50.00" sp="10.00" opacity="40.00" color="red"/><text xp="71.37" yp="60.00" sp="3.75" align="center" wp="0.00" font="sans" opacity="100.00" color="rgb(75,75,75)" type="">Females</text><text xp="71.37" yp="47.50" sp="5.00" align="center" wp="0.00" font="sans" opacity="100.00" color="black" type="">52.9%</text><text align="e" xp="95" yp="5" sp="2" >Slide 10</text>
+</slide>
+<slide bg="black" fg="white">
+<image name="earth.jpg" xp="50" yp="50" width="25" height="0"/>
+<line xp1="50" yp1="80" xp2="50" yp2="70" sp="0.1" color="white"/>
+<text align="c" xp="50" yp="82" sp="4" >you are here</text>
+<text align="e" xp="95" yp="5" sp="2" >Slide 11</text>
+</slide>
+<slide>
+<list type="number" xp="10" yp="90" sp="4" >
+<li>One</li>
+<li>Two</li>
+<li>Three</li>
+</list>
+<list align="center" xp="60" yp="90" sp="4" >
+<li>One</li>
+<li>Two is bigger</li>
+<li>Third item is larger</li>
+</list>
+<list type="bullet" xp="10" yp="40" sp="4" >
+<li>One</li>
+<li>Two</li>
+<li>Third item is larger</li>
+</list>
+<list xp="60" yp="40" sp="4" >
+<li>One</li>
+<li>Two</li>
+<li>Third item is larger</li>
+</list>
+<text align="e" xp="95" yp="5" sp="2" >Slide 12</text>
+</slide>
+</deck>

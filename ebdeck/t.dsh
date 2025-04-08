@@ -35,7 +35,7 @@ deck
 		bx=10
 		by=90
 		bs=2
-		vline 10 0 100 0.2 "red" 50
+		vline 10 0 100 0.2 "blue" 50
 		list bx by bs
 			li "one"
 			li "two"
