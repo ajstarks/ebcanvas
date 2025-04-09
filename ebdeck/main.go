@@ -93,16 +93,15 @@ func (a *App) Layout(outsideWidth, outsideHeight int) (int, int) {
 }
 
 func (a *App) Draw(screen *ebiten.Image) {
-	ebdeck(a, screen)
-}
-
-func (a *App) Update() error {
-
 	// if the deckfile has changed, reload
 	t, err := modtime(a.deckname)
 	if len(a.deckname) > 0 && err == nil && t.After(btime) {
 		a.dodeck()
 	}
+	ebdeck(a, screen)
+}
+
+func (a *App) Update() error {
 
 	// mouse wheel position
 	_, wy := ebiten.Wheel()
