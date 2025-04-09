@@ -576,12 +576,12 @@ func (a *App) dodeck() {
 	r, err := a.updateDeck()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "%v\n", err)
-		os.Exit(2)
+		return
 	}
 	d, err := deck.ReadDeck(r, 0, 0)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "%v\n", err)
-		os.Exit(2)
+		return
 	}
 	// cache all images
 	ns := len(d.Slide)
