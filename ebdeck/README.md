@@ -19,8 +19,7 @@ If the file changes, ebdeck will refresh the display.
 * End: show last slide
 * Down Arrow, Left Arrow, Page Down: previous slide
 * Up Arrow, Right Arrow, Page Up: next slide
-* [ : grid on
-* ] : grid off
+* G : toggle 5% grid
 
 # command line options
 ```
