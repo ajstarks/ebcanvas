@@ -58,6 +58,7 @@ const (
 
 var (
 	btime                     time.Time
+	gridstate                 bool
 	codemap                   = strings.NewReplacer("\t", "    ") // convert tyabs to spaces
 	opts                      options                             // command line options
 	screenWidth, screenHeight int                                 // screen width, height
@@ -99,8 +100,8 @@ func (a *App) Update() error {
 
 	// if the deckfile has changed, reload
 	t, err := modtime(a.deckname)
-	if err == nil && t.After(btime) {
-		a.dodeck(0, a.nslides, 0, 0)
+	if len(a.deckname) > 0 && err == nil && t.After(btime) {
+		a.dodeck()
 	}
 
 	// mouse wheel position
@@ -111,13 +112,12 @@ func (a *App) Update() error {
 		inpututil.IsKeyJustPressed(ebiten.KeyEscape):
 		os.Exit(0)
 	// grid
-	case inpututil.IsKeyJustPressed(ebiten.KeyBracketLeft):
+	case inpututil.IsKeyJustPressed(ebiten.KeyG):
 		opts.gridpct = 5
-	case inpututil.IsKeyJustPressed(ebiten.KeyBracketRight):
-		opts.gridpct = 0
+		gridstate = !gridstate
 	// refresh
 	case inpututil.IsKeyJustPressed(ebiten.KeyR):
-		a.dodeck(0, a.nslides, 0, 0)
+		a.dodeck()
 	// home key -> first slide
 	case inpututil.IsKeyJustPressed(ebiten.KeyHome):
 		a.slideNumber = 0
@@ -140,18 +140,15 @@ func (a *App) Update() error {
 	return nil
 }
 
-// modtime returns the modification time of a file
-func modtime(filename string) (time.Time, error) {
-	if filename == "" {
-		return time.Time{}, nil
-	}
-	s, err := os.Stat(filename)
-	return s.ModTime(), err
-}
-
 // process slides
 func process(a *App, canvas *ebcanvas.Canvas) {
-	ebiten.SetWindowTitle(fmt.Sprintf("%s: page %d of %d", a.deckname, a.slideNumber+1, a.nslides+1))
+	var title string
+	if len(a.deckname) == 0 {
+		title = "Standard Input"
+	} else {
+		title = a.deckname
+	}
+	ebiten.SetWindowTitle(fmt.Sprintf("%s: page %d of %d", title, a.slideNumber+1, a.nslides+1))
 	slide := a.d.Slide[a.slideNumber]
 
 	var bg color.NRGBA
@@ -215,7 +212,7 @@ func process(a *App, canvas *ebcanvas.Canvas) {
 		}
 	}
 	// add a grid, if specified
-	if opts.gridpct > 0 {
+	if opts.gridpct > 0 && gridstate {
 		gc := ebcanvas.ColorLookup(slide.Fg)
 		gc.A = 100
 		canvas.Grid(0, 0, 100, 100, 0.1, float32(opts.gridpct), gc)
@@ -554,12 +551,20 @@ func loadDeckFont(dname, name string) {
 	fontmap[dname] = f
 }
 
+// modtime returns the modification time of a file
+func modtime(filename string) (time.Time, error) {
+	if filename == "" {
+		return time.Now(), nil
+	}
+	s, err := os.Stat(filename)
+	return s.ModTime(), err
+}
+
 func (a *App) updateDeck() (io.ReadCloser, error) {
 	var err error
 	var r io.ReadCloser
 	if a.deckname == "" {
 		r = os.Stdin
-		a.deckname = "Standard-Input"
 	} else {
 		r, err = os.Open(a.deckname)
 	}
@@ -567,7 +572,7 @@ func (a *App) updateDeck() (io.ReadCloser, error) {
 }
 
 // dodeck reads a deck, caching all images,
-func (a *App) dodeck(begin, end int, pw, ph float64) {
+func (a *App) dodeck() {
 	r, err := a.updateDeck()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "%v\n", err)
@@ -596,8 +601,9 @@ func (a *App) dodeck(begin, end int, pw, ph float64) {
 			}
 		}
 	}
-
-	r.Close()
+	if r != os.Stdin {
+		r.Close()
+	}
 }
 
 func main() {
@@ -618,7 +624,7 @@ func main() {
 	loadDeckFont("mono", opts.monofont)
 	loadDeckFont("symbol", opts.symbolfont)
 	pw, ph := setpagesize(opts.pagesize)
-	begin, end := pagerange(opts.pages)
+	//begin, end := pagerange(opts.pages)
 	if pw == 0 && ph == 0 {
 		p, ok := pagemap[opts.pagesize]
 		if !ok {
@@ -636,6 +642,7 @@ func main() {
 		a.deckname = ""
 	} else {
 		a.deckname = files[0]
+
 	}
 	var err error
 	btime, err = modtime(a.deckname)
@@ -645,7 +652,7 @@ func main() {
 	}
 
 	screenWidth, screenHeight = int(pw), int(ph)
-	a.dodeck(begin, end, pw, ph)
+	a.dodeck()
 	ebiten.SetWindowSize(screenWidth, screenHeight)
 	if err := ebiten.RunGame(a); err != nil {
 		fmt.Fprintf(os.Stderr, "%v\n", err)
