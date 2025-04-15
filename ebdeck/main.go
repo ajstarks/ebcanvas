@@ -397,14 +397,20 @@ func dtext(canvas *ebcanvas.Canvas, t deck.Text) {
 func dimage(canvas *ebcanvas.Canvas, img image.Image, i deck.Image) {
 	var sc float32
 	sc = 100.0
+	b := img.Bounds()
+	imw := b.Max.X - b.Min.X
+	imh := b.Max.Y - b.Min.Y
 	if i.Scale > 0 {
 		sc = float32(i.Scale)
 	}
-	if i.Height == 0 {
+	if i.Height == 0 && i.Width > 0 { // scale by width if height is zero
 		sc = float32(i.Width)
+		i.Height = imh
+	}
+	if i.Width == 0 { // if no width is set, use the natural width
+		i.Width = imw
 	}
 	canvas.CenterImage(float32(i.Xp), float32(i.Yp), sc, img)
-
 	// process captions
 	if len(i.Caption) > 0 {
 		if i.Font == "" {
