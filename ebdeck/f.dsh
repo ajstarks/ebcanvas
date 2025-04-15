@@ -40,7 +40,7 @@ deck
 
     // randgen -n 20 -min=0 -max=100 -xint 1 -dec 0 > data.d
     slide
-        dchart -val=f -xlabel=2 -bar -datacond=0,50,orange data.d
+        dchart -val=f -xlabel=3 -bar -datacond=0,50,orange -grid -yaxis -yrange=0,100,10 data.d
         etext "Slide 8" 95 5 2
     eslide
 
