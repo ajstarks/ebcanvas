@@ -417,7 +417,7 @@ func dimage(canvas *ebcanvas.Canvas, img image.Image, i deck.Image) {
 			i.Font = "sans"
 		}
 		if i.Sp == 0 {
-			i.Sp = 2.0
+			i.Sp = 1.8
 		}
 		c := ebcanvas.ColorLookup(i.Color)
 		ebcanvas.CurrentFont = fontmap[i.Font]
