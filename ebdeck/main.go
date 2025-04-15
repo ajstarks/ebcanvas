@@ -404,6 +404,23 @@ func dimage(canvas *ebcanvas.Canvas, img image.Image, i deck.Image) {
 		sc = float32(i.Width)
 	}
 	canvas.CenterImage(float32(i.Xp), float32(i.Yp), sc, img)
+
+	// process captions
+	if len(i.Caption) > 0 {
+		if i.Font == "" {
+			i.Font = "sans"
+		}
+		if i.Sp == 0 {
+			i.Sp = 2.0
+		}
+		c := ebcanvas.ColorLookup(i.Color)
+		ebcanvas.CurrentFont = fontmap[i.Font]
+		ih := (float32(i.Height/2) / float32(screenHeight)) * sc
+		cx := float32(i.Xp)
+		cy := (float32(i.Yp) - ih) - (float32(i.Sp) * 1.5)
+		cs := float32(i.Sp)
+		canvas.CText(cx, cy, cs, i.Caption, c)
+	}
 }
 
 // setopacity sets the alpha value:
