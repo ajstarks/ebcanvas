@@ -404,7 +404,7 @@ func dimage(canvas *ebcanvas.Canvas, img image.Image, i deck.Image) {
 		sc = float32(i.Scale)
 	}
 	if i.Height == 0 && i.Width > 0 { // scale by width if height is zero
-		sc = float32(i.Width)
+		sc = (float32(screenWidth) / float32(imw)) * 4
 		i.Height = imh
 	}
 	if i.Width == 0 { // if no width is set, use the natural width
