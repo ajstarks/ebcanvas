@@ -52,19 +52,18 @@ func colorwall(screen *ebiten.Image) {
 	canvas.Height = screenHeight
 	canvas.Width = screenWidth
 
-	var x, y, left, right, top, bottom, xincr, yincr, nc, nr float32
+	var x, y, left, right, top, bottom, xincr, yincr float32
 	left, right, bottom, top = 25, 85, 20, 80
-	nr, nc = 8, 8
+	nr, nc := 8, 8
 
-	xincr = (right - left) / nr
-	yincr = (top - bottom) / nc
+	xincr = (right - left) / float32(nr)
+	yincr = (top - bottom) / float32(nc)
 	canvas.Background(bgcolor)
 	y = top
-	for i := range layout {
-		row := layout[i]
+	for i := range nr {
 		x = left
-		for j := range row {
-			canvas.Square(x, y, yincr-0.1, ebcanvas.ColorLookup(row[j]))
+		for j := range nc {
+			canvas.Square(x, y, yincr-0.1, ebcanvas.ColorLookup(layout[i][j]))
 			x += xincr
 		}
 		y -= yincr
