@@ -3,13 +3,19 @@ package main
 
 import (
 	"fmt"
+	"image/color"
 	"os"
 
 	"github.com/ajstarks/ebcanvas"
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/inpututil"
 )
 
 var (
+	screenWidth  int = 1000
+	screenHeight int = 1000
+	bgcolor          = color.NRGBA{0xdd, 0xdd, 0xdd, 0xdd}
+
 	layout = [][]string{
 		{"#000000", "#eeeeee", "#735976", "#eeeeee", "#000000", "#af5d23", "#eeeeee", "#366e93"}, // row 1
 		{"#eeeeee", "#03342f", "#000000", "#eeeeee", "#ccb04d", "#eeeeee", "#a74e4a", "#000000"}, // row 2
@@ -20,14 +26,15 @@ var (
 		{"#eeeeee", "#a74e4a", "#5e825e", "#eeeeee", "#000000", "#735976", "#eeeeee", "#eeeeee"}, // row 7
 		{"#000000", "#eeeeee", "#391a32", "#ccb04d", "#eeeeee", "#000000", "#a74e4a", "#000000"}, // row 8
 	}
-
-	screenWidth  int = 1000
-	screenHeight int = 1000
 )
 
 type Game struct{}
 
 func (g *Game) Update() error {
+	if inpututil.IsKeyJustPressed(ebiten.KeyQ) ||
+		inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
+		os.Exit(0)
+	}
 	return nil
 }
 
@@ -51,16 +58,12 @@ func colorwall(screen *ebiten.Image) {
 
 	xincr = (right - left) / nr
 	yincr = (top - bottom) / nc
-	bgcolor := ebcanvas.ColorLookup("#dddddd")
-	basecolor := ebcanvas.ColorLookup("#bbbbbb")
-
 	canvas.Background(bgcolor)
-	canvas.Square(51.25, 53.75, 60.5, basecolor)
 	y = top
-	for i := 0; i < len(layout); i++ {
+	for i := range layout {
 		row := layout[i]
 		x = left
-		for j := 0; j < len(row); j++ {
+		for j := range row {
 			canvas.Square(x, y, yincr-0.1, ebcanvas.ColorLookup(row[j]))
 			x += xincr
 		}
@@ -70,7 +73,7 @@ func colorwall(screen *ebiten.Image) {
 
 func main() {
 	ebiten.SetWindowSize(screenWidth, screenHeight)
-	ebiten.SetWindowTitle("colorwall: inspired by Ellsworth Kelly's Colors for a Large Wall, 1951")
+	ebiten.SetWindowTitle("colorwall: inspired by Ellsworth Kelly's “Colors for a Large Wall”, 1951")
 	if err := ebiten.RunGame(&Game{}); err != nil {
 		fmt.Fprintf(os.Stderr, "%v\n", err)
 		return
