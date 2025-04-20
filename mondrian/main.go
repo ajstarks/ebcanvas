@@ -66,6 +66,7 @@ func mondiran(screen *ebiten.Image) {
 func main() {
 	ebiten.SetWindowSize(screenWidth, screenHeight)
 	ebiten.SetWindowTitle("Mondrian")
+	ebiten.SetTPS(0)
 	if err := ebiten.RunGame(&Game{}); err != nil {
 		fmt.Fprintf(os.Stderr, "%v\n", err)
 		return

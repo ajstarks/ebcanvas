@@ -46,7 +46,7 @@ func eclipse(screen *ebiten.Image) {
 func main() {
 	ebiten.SetWindowSize(screenWidth, screenHeight)
 	ebiten.SetWindowTitle("eclipse")
-
+	ebiten.SetTPS(0)
 	if err := ebiten.RunGame(&App{}); err != nil {
 		fmt.Fprintf(os.Stderr, "%v\n", err)
 		return

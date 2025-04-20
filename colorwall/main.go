@@ -8,7 +8,6 @@ import (
 
 	"github.com/ajstarks/ebcanvas"
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/hajimehoshi/ebiten/v2/inpututil"
 )
 
 var (
@@ -28,21 +27,17 @@ var (
 	}
 )
 
-type Game struct{}
+type App struct{}
 
-func (g *Game) Update() error {
-	if inpututil.IsKeyJustPressed(ebiten.KeyQ) ||
-		inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
-		os.Exit(0)
-	}
+func (g *App) Update() error {
 	return nil
 }
 
-func (g *Game) Layout(outsideWidth, outsideHeight int) (int, int) {
+func (g *App) Layout(outsideWidth, outsideHeight int) (int, int) {
 	return screenWidth, screenHeight
 }
 
-func (g *Game) Draw(screen *ebiten.Image) {
+func (g *App) Draw(screen *ebiten.Image) {
 	colorwall(screen)
 }
 
@@ -73,7 +68,8 @@ func colorwall(screen *ebiten.Image) {
 func main() {
 	ebiten.SetWindowSize(screenWidth, screenHeight)
 	ebiten.SetWindowTitle("colorwall: inspired by Ellsworth Kelly's “Colors for a Large Wall”, 1951")
-	if err := ebiten.RunGame(&Game{}); err != nil {
+	ebiten.SetTPS(0)
+	if err := ebiten.RunGame(&App{}); err != nil {
 		fmt.Fprintf(os.Stderr, "%v\n", err)
 		return
 	}

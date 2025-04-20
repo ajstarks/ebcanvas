@@ -63,7 +63,7 @@ func main() {
 		fmt.Fprintf(os.Stderr, "%v\n", err)
 		return
 	}
-
+	ebiten.SetTPS(0)
 	if err := ebiten.RunGame(&App{}); err != nil {
 		fmt.Fprintf(os.Stderr, "%v\n", err)
 		return
