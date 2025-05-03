@@ -133,6 +133,11 @@ func dottedvline(canvas *ec.Canvas, x, y1, y2, dotsize, step float32, color colo
 	}
 }
 
+func (c *ChartBox) MinMax(minv, maxv float64) {
+	c.Minvalue = minv
+	c.Maxvalue = maxv
+}
+
 // Bar makes a (column) bar chart
 func (c *ChartBox) Bar(canvas *ec.Canvas, size float64) {
 	dlen := float64(len(c.Data) - 1)
