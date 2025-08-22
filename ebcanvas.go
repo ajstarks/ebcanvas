@@ -75,8 +75,11 @@ func dimen(xp, yp, w, h float32) (float32, float32) {
 // arc draws a filled arc centered at (cx,cy) with radius r, between angle a1 and a2
 func arc(screen *ebiten.Image, cx, cy, r, a1, a2 float32, fillcolor color.NRGBA) {
 	var p vector.Path
+	fillOp := &vector.FillOptions{FillRule: vector.FillRuleEvenOdd}
+	drawOp := &vector.DrawPathOptions{AntiAlias: true}
+	drawOp.ColorScale.ScaleWithColor(fillcolor)
 	p.Arc(cx, cy, r, a1, a2, vector.CounterClockwise)
-	vector.DrawFilledPath(screen, &p, fillcolor, true, vector.FillRuleEvenOdd)
+	vector.FillPath(screen, &p, fillOp, drawOp)
 }
 
 // degreesToRadians converts degrees (0-360 counter-clockwise) to the
@@ -89,9 +92,11 @@ func degreesToRadians(deg float32) float32 {
 // between angles a1 and a2 (degrees 0-360, counter-clockwise)
 func strokedarc(screen *ebiten.Image, cx, cy, r, a1, a2, size float32, strokecolor color.NRGBA) {
 	var p vector.Path
-	op := vector.StrokeOptions{Width: size}
+	strokeOp := &vector.StrokeOptions{Width: size}
+	drawOp := &vector.DrawPathOptions{AntiAlias: true}
+	drawOp.ColorScale.ScaleWithColor(strokecolor)
 	p.Arc(cx, cy, r, a1, a2, vector.CounterClockwise)
-	vector.StrokePath(screen, &p, strokecolor, true, &op)
+	vector.StrokePath(screen, &p, strokeOp, drawOp)
 }
 
 // btext draws text beginning at (x,y)
@@ -217,7 +222,10 @@ func polygon(screen *ebiten.Image, x, y []float32, fillcolor color.NRGBA) {
 	for i := 1; i < l; i++ {
 		p.LineTo(x[i], y[i])
 	}
-	vector.DrawFilledPath(screen, &p, fillcolor, true, vector.FillRuleNonZero)
+	fillOp := &vector.FillOptions{}
+	drawOp := &vector.DrawPathOptions{AntiAlias: true}
+	drawOp.ColorScale.ScaleWithColor(fillcolor)
+	vector.FillPath(screen, &p, fillOp, drawOp)
 }
 
 // quadcurve draws a filled quadradic bezier curve beginning at (x1,y1),
@@ -226,7 +234,10 @@ func quadcurve(screen *ebiten.Image, x1, y1, x2, y2, x3, y3 float32, fillcolor c
 	var p vector.Path
 	p.MoveTo(x1, y1)
 	p.QuadTo(x2, y2, x3, y3)
-	vector.DrawFilledPath(screen, &p, fillcolor, true, vector.FillRuleEvenOdd)
+	fillOp := &vector.FillOptions{FillRule: vector.FillRuleEvenOdd}
+	drawOp := &vector.DrawPathOptions{AntiAlias: true}
+	drawOp.ColorScale.ScaleWithColor(fillcolor)
+	vector.FillPath(screen, &p, fillOp, drawOp)
 }
 
 // strokeduadcurve strokes a quadradic bezier curve beginning at (x1,y1),
@@ -235,8 +246,10 @@ func strokedquadcurve(screen *ebiten.Image, x1, y1, x2, y2, x3, y3, sw float32, 
 	var p vector.Path
 	p.MoveTo(x1, y1)
 	p.QuadTo(x2, y2, x3, y3)
-	op := vector.StrokeOptions{Width: sw}
-	vector.StrokePath(screen, &p, strokecolor, true, &op)
+	op := &vector.StrokeOptions{Width: sw}
+	drawOp := &vector.DrawPathOptions{AntiAlias: true}
+	drawOp.ColorScale.ScaleWithColor(strokecolor)
+	vector.StrokePath(screen, &p, op, drawOp)
 }
 
 // cubecurve makes a filled cubic Bezier curve beginning at (x1, y1),
@@ -245,7 +258,10 @@ func cubecurve(screen *ebiten.Image, x1, y1, x2, y2, x3, y3, x4, y4 float32, fil
 	var p vector.Path
 	p.MoveTo(x1, y1)
 	p.CubicTo(x2, y2, x3, y3, x4, y4)
-	vector.DrawFilledPath(screen, &p, fillcolor, true, vector.FillRuleEvenOdd)
+	fillOp := &vector.FillOptions{FillRule: vector.FillRuleEvenOdd}
+	drawOp := &vector.DrawPathOptions{AntiAlias: true}
+	drawOp.ColorScale.ScaleWithColor(fillcolor)
+	vector.FillPath(screen, &p, fillOp, drawOp)
 }
 
 // strokedcubecurve strokes a cubic Bezier curve beginning at (x1, y1),
@@ -254,8 +270,10 @@ func strokedcubecurve(screen *ebiten.Image, x1, y1, x2, y2, x3, y3, x4, y4, sw f
 	var p vector.Path
 	p.MoveTo(x1, y1)
 	p.CubicTo(x2, y2, x3, y3, x4, y4)
-	op := vector.StrokeOptions{Width: sw}
-	vector.StrokePath(screen, &p, strokecolor, true, &op)
+	op := &vector.StrokeOptions{Width: sw}
+	drawOp := &vector.DrawPathOptions{AntiAlias: true}
+	drawOp.ColorScale.ScaleWithColor(strokecolor)
+	vector.StrokePath(screen, &p, op, drawOp)
 }
 
 // showimage places an image with the upper left corner at (x,y)
