@@ -179,7 +179,7 @@ func play(screen *ebiten.Image) {
 
 	// Image
 	canvas.CText(colx, 30, labelsize, "Image", labelcolor)
-	canvas.Image(colx, 15, (float32(screenWidth)/1000)*10, earth)
+	canvas.Image(colx, 15, 10, earth)
 	canvas.Coord(colx, 15, subsize, "", color.NRGBA{255, 255, 255, 255})
 
 	if drawgrid {

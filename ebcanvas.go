@@ -173,6 +173,7 @@ func textwrap(screen *ebiten.Image, x, y, w, linespacing, size float64, s string
 	}
 }
 
+// textwraps is a strict version of textwrap
 func textwraps(screen *ebiten.Image, x, y, w, linespacing, size float64, s string, color color.NRGBA) {
 	const factor = 0.3
 	ff := &text.GoTextFace{Source: CurrentFont, Size: size}
@@ -197,18 +198,18 @@ func textwraps(screen *ebiten.Image, x, y, w, linespacing, size float64, s strin
 // centerRect draws a filled rectangle centered at (x,y) with dimensions (w,h)
 func centerRect(screen *ebiten.Image, x, y, w, h float32, fillcolor color.NRGBA) {
 	px, py := x-(w/2), y-(h/2)
-	vector.DrawFilledRect(screen, px, py, w, h, fillcolor, true)
+	vector.FillRect(screen, px, py, w, h, fillcolor, true)
 }
 
 // cornerRect draws a filled rectangle with upperleft at (x,y) with dimensions (w,h)
 func cornerRect(screen *ebiten.Image, x, y, w, h float32, fillcolor color.NRGBA) {
 	px, py := x, y
-	vector.DrawFilledRect(screen, px, py, w, h, fillcolor, true)
+	vector.FillRect(screen, px, py, w, h, fillcolor, true)
 }
 
 // circle draws a filled circle centered at (x,y), with radius r
 func circle(screen *ebiten.Image, cx, cy, r float32, fillcolor color.NRGBA) {
-	vector.DrawFilledCircle(screen, cx, cy, r, fillcolor, true)
+	vector.FillCircle(screen, cx, cy, r, fillcolor, true)
 }
 
 // line draws a line between (x1,y1) and (x2,y2)
@@ -287,6 +288,7 @@ func strokedcubecurve(screen *ebiten.Image, x1, y1, x2, y2, x3, y3, x4, y4, sw f
 // showimage places an image with the upper left corner at (x,y)
 func showimage(screen *ebiten.Image, x, y float32, scale float64, img image.Image) {
 	op := &ebiten.DrawImageOptions{}
+	scale = ebiten.Monitor().DeviceScaleFactor() * scale
 	op.GeoM.Scale(scale, scale)
 	op.GeoM.Translate(float64(x), float64(y))
 	im := ebiten.NewImageFromImage(img)
@@ -304,10 +306,12 @@ func showimage(screen *ebiten.Image, x, y float32, scale float64, img image.Imag
 // CenterImage places an image centered at (x,y) at the specified scale (0-100)
 // using percent-based coordinates and measures
 func (c *Canvas) CenterImage(x, y float32, scale float32, img image.Image) {
+	scale /= 100                                                       // image scaling
+	mscale := float32(ebiten.Monitor().DeviceScaleFactor())            // display scale
+	imw, imh := img.Bounds().Dx(), img.Bounds().Dy()                   // image dimensions
+	fimw, fimh := float32(imw)*scale*mscale, float32(imh)*scale*mscale // scaled image dimensions
 	cw, ch := float32(c.Width), float32(c.Height)
 	x, y = dimen(x, y, cw, ch)
-	scale /= 100
-	fimw, fimh := float32(img.Bounds().Max.X)*scale, float32(img.Bounds().Max.Y)*scale
 	showimage(c.Screen, x-(fimw/2), y-(fimh/2), float64(scale), img)
 }
 

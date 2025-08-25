@@ -118,6 +118,7 @@ func work(screen *ebiten.Image) {
 	canvas.Circle(labelx, yp, dotsize, red)
 	labelx += hspace * 0.4
 	canvas.Text(labelx, yp, textsize, message, txcolor)
+	canvas.Circle(labelx, yp, dotsize, red)
 	canvas.Circle(objx, yp+halfvs, dotsize, red)
 	canvas.RText(objx, yp+halfvs, 45, textsize, message, txcolor)
 	yp -= vspace

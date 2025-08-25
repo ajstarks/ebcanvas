@@ -58,8 +58,9 @@ func hello(screen *ebiten.Image) {
 	txcolor := color.NRGBA{255, 255, 255, 255}
 
 	canvas.Background(bgcolor)
-	canvas.Image(50, 0, 100, earth)
-	canvas.CText(50, 80, 10, "hello, world", txcolor)
+	var px, py float32 = 50.0, 0.0
+	canvas.Image(px, py, 100, earth)
+	canvas.CText(px, py+80, 10, "hello, world", txcolor)
 }
 
 func main() {
