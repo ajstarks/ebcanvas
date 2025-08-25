@@ -20,7 +20,8 @@ func (g *Game) Update() error {
 	return nil
 }
 
-func (g *Game) Layout(outsideWidth, outsideHeight int) (int, int) {
+func (a *App) Layout(outsideWidth, outsideHeight int) (int, int) {
+	screenWidth, screenHeight = ebcanvas.DisplayScale(outsideWidth, outsideHeight)
 	return screenWidth, screenHeight
 }
 

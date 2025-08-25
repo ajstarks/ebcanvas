@@ -89,6 +89,7 @@ var (
 )
 
 func (a *App) Layout(outsideWidth, outsideHeight int) (int, int) {
+	screenWidth, screenHeight = ebcanvas.DisplayScale(outsideWidth, outsideHeight)
 	return screenWidth, screenHeight
 }
 

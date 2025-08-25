@@ -2,7 +2,6 @@ api
 arc
 compchart
 colorwall
-colorwall
 confetti
 ebdeck
 echart

@@ -70,6 +70,14 @@ func dimen(xp, yp, w, h float32) (float32, float32) {
 	return pct(xp, w), pct(100-yp, h)
 }
 
+// Scale for the display
+func DisplayScale(w, h int) (int, int) {
+	scale := ebiten.Monitor().DeviceScaleFactor()
+	w = int(math.Ceil(float64(w) * scale))
+	h = int(math.Ceil(float64(h) * scale))
+	return w, h
+}
+
 // Absolute methods
 
 // arc draws a filled arc centered at (cx,cy) with radius r, between angle a1 and a2
