@@ -12,8 +12,11 @@ github.com/go-text/typesetting-utils v0.0.0-20241103174707-87a29e9e6066 h1:qCuYC
 github.com/go-text/typesetting-utils v0.0.0-20241103174707-87a29e9e6066/go.mod h1:DDxDdQEnB70R8owOx3LVpEFvpMK9eeH1o2r0yZhFI9o=
 github.com/hajimehoshi/bitmapfont/v4 v4.1.0-alpha.4 h1:Fi0tj+FB9GugdXnFmTstav+6/TFdnTfQKhTbeBg0J9k=
 github.com/hajimehoshi/bitmapfont/v4 v4.1.0-alpha.4/go.mod h1:/PD+aLjAJ0F2UoQx6hkOfXqWN7BkroDUMr5W+IT1dpE=
-github.com/hajimehoshi/ebiten/v2 v2.9.0-alpha.14 h1:6pPqeEm4qWgqoRYGYNyBWN9j+wTbz/agIZdQHra/AlM=
-github.com/hajimehoshi/ebiten/v2 v2.9.0-alpha.14/go.mod h1:e1ekBfvhzWVCco3IpGxy1/pujAUx5CFVtqef8icUjeU=
+github.com/hajimehoshi/bitmapfont/v4 v4.1.0-alpha.5 h1:2aPvjNC5pJTOqMbHWkJ4mR8lqgvnV7bXxciarDcJGXg=
+github.com/hajimehoshi/ebiten/v2 v2.9.0-alpha.15 h1:dHn0UBoFm2EPdTfSzuSyZlANUfhNxukDzh5oFeQzxcY=
+github.com/hajimehoshi/ebiten/v2 v2.9.0-alpha.15/go.mod h1:e1ekBfvhzWVCco3IpGxy1/pujAUx5CFVtqef8icUjeU=
+github.com/hajimehoshi/ebiten/v2 v2.9.0-alpha.16 h1:106MQU9ipJz6sdaBEwPq0OPNTyXK6NabSNLpCj7DxCA=
+github.com/hajimehoshi/ebiten/v2 v2.9.0-alpha.16/go.mod h1:QguLmnY9V9WaWuk4oChaawF6EZ6SM12VucWmdGL797s=
 github.com/jezek/xgb v1.1.1 h1:bE/r8ZZtSv7l9gk6nU0mYx51aXrvnyb44892TwSaqS4=
 github.com/jezek/xgb v1.1.1/go.mod h1:nrhwO0FX/enq75I7Y7G8iN1ubpSGZEiA3v9e9GyRFlk=
 github.com/pierrec/lz4/v4 v4.1.22 h1:cKFw6uJDK+/gfw5BcDL0JL5aBsAFdsIT18eRtLj7VIU=

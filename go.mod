@@ -4,7 +4,7 @@ go 1.24.1
 
 require (
 	github.com/ajstarks/deck v0.0.0-20250118150323-ef6ed1252085
-	github.com/hajimehoshi/ebiten/v2 v2.9.0-alpha.14
+	github.com/hajimehoshi/ebiten/v2 v2.9.0-alpha.16
 )
 
 require (

@@ -677,6 +677,7 @@ func main() {
 	screenWidth, screenHeight = int(pw), int(ph)
 	a.dodeck()
 	ebiten.SetWindowSize(screenWidth, screenHeight)
+	ebiten.SetWindowResizingMode(ebiten.WindowResizingModeEnabled)
 	if err := ebiten.RunGame(a); err != nil {
 		fmt.Fprintf(os.Stderr, "%v\n", err)
 		os.Exit(3)
